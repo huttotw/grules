@@ -1,5 +1,5 @@
 # Introduction
-This package was created with inspiration from @hopkinsth [go-ruler](https://github.com/hopkinsth/go-ruler) to run a simple set of rules against an entity.
+This package was created with inspiration from Thomas' [go-ruler](https://github.com/hopkinsth/go-ruler) to run a simple set of rules against an entity.
 
 This version includes a couple more features including, AND and OR composites and the ability to add custom comparators.
 
