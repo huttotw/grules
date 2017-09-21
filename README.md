@@ -1,5 +1,3 @@
-# ruled
-
 # Introduction
 This package was created with inspiration from @hopkinsth's [go-ruler](https://github.com/hopkinsth/go-ruler) to run a simple set of rules against an entity.
 
