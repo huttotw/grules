@@ -5,11 +5,15 @@ This version includes a couple more features including, AND and OR composites an
 
 # Example
 ```go
+// Create a new instance of an engine with some default comparators
 e := NewEngine()
+
+// Add a new, custom comparator
 e = e.AddComparator("always-false", func(a, b interface{}) bool {
     return false
 })
 
+// Create composites, with rules for the engine to evaluate
 e.Composites = []Composite{
     Composite{
         Operator: OperatorOr,
@@ -28,12 +32,14 @@ e.Composites = []Composite{
     },
 }
 
+// Give some properties, this map can be deeper and supports interfaces
 props := map[string]interface{}{
     "user": map[string]interface{}{
         "name": "Trevor",
     }
 }
 
+// Run the engine on the props
 res := e.Evaluate(props)
 // res == true
 ```
