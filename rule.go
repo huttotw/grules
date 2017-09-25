@@ -1,6 +1,7 @@
 package grules
 
 import (
+	"encoding/json"
 	"reflect"
 )
 
@@ -10,6 +11,18 @@ const (
 	// OperatorOr is what identifies the OR condition in a composite
 	OperatorOr = "or"
 )
+
+// defaultComparators is a map of all the default comparators that
+// a new engine should include
+var defaultComparators = map[string]Comparator{
+	"eq":       equal,
+	"ne":       notEqual,
+	"gt":       greaterThan,
+	"gte":      greaterThanEqual,
+	"lt":       lessThan,
+	"lte":      lessThanEqual,
+	"contains": contains,
+}
 
 // Rule is a our smallest unit of measure, each rule will be
 // evaluated separately. The comparator is the logical operation to be
@@ -40,17 +53,20 @@ type Engine struct {
 // NewEngine will create a new engine with the default comparators
 func NewEngine() Engine {
 	e := Engine{
-		comparators: map[string]Comparator{
-			"eq":       equal,
-			"ne":       notEqual,
-			"gt":       greaterThan,
-			"gte":      greaterThanEqual,
-			"lt":       lessThan,
-			"lte":      lessThanEqual,
-			"contains": contains,
-		},
+		comparators: defaultComparators,
 	}
 	return e
+}
+
+// NewJSONEngine will create a new engine from it's JSON representation
+func NewJSONEngine(raw json.RawMessage) (Engine, error) {
+	var e Engine
+	err := json.Unmarshal(raw, &e)
+	if err != nil {
+		return Engine{}, err
+	}
+	e.comparators = defaultComparators
+	return e, nil
 }
 
 // AddComparator will add a new comparator that can be used in the

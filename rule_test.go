@@ -9,12 +9,12 @@ func TestRuleEvaluate(t *testing.T) {
 		"eq": equal,
 	}
 	props := map[string]interface{}{
-		"name": "Trevor",
+		"first_name": "Trevor",
 	}
 	t.Run("basic rule", func(t *testing.T) {
 		r := Rule{
 			Comparator: "eq",
-			Path:       "name",
+			Path:       "first_name",
 			Value:      "Trevor",
 		}
 		res := r.evaluate(props, comparators)
@@ -68,6 +68,7 @@ func TestCompositeEvaluate(t *testing.T) {
 		"name": "Trevor",
 		"age":  23,
 	}
+
 	t.Run("and", func(t *testing.T) {
 		c := Composite{
 			Operator: OperatorAnd,
@@ -167,6 +168,20 @@ func TestAddComparator(t *testing.T) {
 	res := e.Evaluate(props)
 	if res != false {
 		t.Fatal("expected engine to be false")
+	}
+}
+
+func TestNewJSONEngine(t *testing.T) {
+	j := []byte(`{"composites":[{"operator":"and","rules":[{"comparator":"eq","path":"first_name","value":"Trevor"}]}]}`)
+	e, err := NewJSONEngine(j)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(e.Composites) != 1 {
+		t.Fatal("expected 1 composite")
+	}
+	if len(e.Composites[0].Rules) != 1 {
+		t.Fatal("expected 1 rule in first composite")
 	}
 }
 
