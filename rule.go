@@ -2,7 +2,6 @@ package grules
 
 import (
 	"encoding/json"
-	"reflect"
 )
 
 const (
@@ -118,13 +117,6 @@ func (r Rule) evaluate(props map[string]interface{}, comps map[string]Comparator
 	// Make sure we can get a value from the props
 	val := pluck(props, r.Path)
 	if val == nil {
-		return false
-	}
-
-	// Both values must be comparable
-	t1 := reflect.TypeOf(r.Value)
-	t2 := reflect.TypeOf(val)
-	if !t1.Comparable() || !t2.Comparable() {
 		return false
 	}
 
