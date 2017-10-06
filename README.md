@@ -46,7 +46,7 @@ res := e.Evaluate(props)
 
 # Benchmarks
 
-|Benchmark|Operations|Speed|
+|Benchmark|N|Speed|
 |---------|----------|-----|
 |BenchmarkEqual-8|200000000|8.19 ns/op|
 |BenchmarkNotEqual-8|300000000|5.82 ns/op|
