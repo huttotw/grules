@@ -24,11 +24,6 @@ func lessThan(a, b interface{}) bool {
 	ta := reflect.TypeOf(a)
 	tb := reflect.TypeOf(b)
 
-	// Make sure these values can be compared
-	if !ta.Comparable() || !tb.Comparable() {
-		return false
-	}
-
 	// Make sure the types are the same
 	if ta != tb {
 		return false
@@ -77,11 +72,6 @@ func lessThanEqual(a, b interface{}) bool {
 
 	ta := reflect.TypeOf(a)
 	tb := reflect.TypeOf(b)
-
-	// Make sure thes values can be compared
-	if !ta.Comparable() || !tb.Comparable() {
-		return false
-	}
 
 	// Make sure the types are the same
 	if ta != tb {
@@ -135,15 +125,15 @@ func greaterThanEqual(a, b interface{}) bool {
 // contains will return true if a is contained in b
 func contains(a, b interface{}) bool {
 	t1 := reflect.TypeOf(a)
-	v2 := reflect.ValueOf(b)
 
 	if t1.Kind() != reflect.Slice {
 		return false
 	}
 
 	s := reflect.ValueOf(a)
-	for i := 0; i < s.Len(); i++ {
-		if v2.Interface() == s.Index(i).Interface() {
+	n := s.Len()
+	for i := 0; i < n; i++ {
+		if s.Index(i).Interface() == b {
 			return true
 		}
 	}

@@ -44,6 +44,21 @@ res := e.Evaluate(props)
 // res == true
 ```
 
+# Benchmarks
+
+|Benchmark|Operations|Speed|
+|---------|----------|-----|
+|BenchmarkEqual-8|200000000|8.19 ns/op|
+|BenchmarkNotEqual-8|300000000|5.82 ns/op|
+|BenchmarkLessThan-8|50000000|31.8 ns/op|
+|BenchmarkLessThanEqual-8|50000000|26.9 ns/op|
+|BenchmarkGreaterThan-8|30000000|37.7 ns/op|
+|BenchmarkGreaterThanEqual-8|50000000|33.2 ns/op|
+|BenchmarkContains-8|10000000|131 ns/op|
+|BenchmarkContainsLong50000-8|500|2944142 ns/op|
+|BenchmarkPluckShallow-8|30000000|53.8 ns/op|
+|BenchmarkPluckDeep-8|5000000|311 ns/op|
+
 # License
 
 Copyright 2017 Trevor Hutto

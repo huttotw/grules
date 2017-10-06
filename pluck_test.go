@@ -47,3 +47,35 @@ func TestPluck(t *testing.T) {
 		}
 	})
 }
+
+func BenchmarkPluckShallow(b *testing.B) {
+	props := map[string]interface{}{
+		"username": "huttotw",
+	}
+
+	for i := 0; i < b.N; i++ {
+		pluck(props, "username")
+	}
+}
+
+func BenchmarkPluckDeep(b *testing.B) {
+	props := map[string]interface{}{
+		"this": map[string]interface{}{
+			"is": map[string]interface{}{
+				"a": map[string]interface{}{
+					"super": map[string]interface{}{
+						"deep": map[string]interface{}{
+							"map": map[string]interface{}{
+								"hello": "world",
+							},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	for i := 0; i < b.N; i++ {
+		pluck(props, "this.is.a.super.deep.map.hello")
+	}
+}

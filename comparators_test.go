@@ -1,6 +1,7 @@
 package grules
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -27,6 +28,12 @@ func TestEqual(t *testing.T) {
 	}
 }
 
+func BenchmarkEqual(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		equal("benchmark", "benchmark")
+	}
+}
+
 func TestNotEqual(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{"a", "a"}, expected: false},
@@ -45,6 +52,12 @@ func TestNotEqual(t *testing.T) {
 	}
 }
 
+func BenchmarkNotEqual(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		notEqual("benchmark", "not-benchmark")
+	}
+}
+
 func TestLessThan(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{"a", "a"}, expected: false},
@@ -60,6 +73,12 @@ func TestLessThan(t *testing.T) {
 		if res != c.expected {
 			t.Fatalf("expected case %d to be %v, got %v", i, c.expected, res)
 		}
+	}
+}
+
+func BenchmarkLessThan(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		lessThan(0, 1)
 	}
 }
 
@@ -84,6 +103,12 @@ func TestLessThanEqual(t *testing.T) {
 	}
 }
 
+func BenchmarkLessThanEqual(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		lessThanEqual(0, 0)
+	}
+}
+
 func TestGreaterThan(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{"a", "a"}, expected: false},
@@ -99,6 +124,12 @@ func TestGreaterThan(t *testing.T) {
 		if res != c.expected {
 			t.Fatalf("expected case %d to be %v, got %v", i, c.expected, res)
 		}
+	}
+}
+
+func BenchmarkGreaterThan(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		greaterThan(1, 0)
 	}
 }
 
@@ -123,6 +154,12 @@ func TestGreaterThanEqual(t *testing.T) {
 	}
 }
 
+func BenchmarkGreaterThanEqual(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		greaterThanEqual(0, 0)
+	}
+}
+
 func TestContains(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{[]string{"a", "b"}, "a"}, expected: true},
@@ -138,5 +175,24 @@ func TestContains(t *testing.T) {
 		if res != c.expected {
 			t.Fatalf("expected case %d to be %v, got %v", i, c.expected, res)
 		}
+	}
+}
+
+func BenchmarkContains(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		contains([]string{"1", "2"}, "1")
+	}
+}
+
+func BenchmarkContainsLong50000(b *testing.B) {
+	var list []string
+
+	// Simulate a list of postal codes
+	for i := 0; i < 50000; i++ {
+		list = append(list, fmt.Sprintf("%d", i))
+	}
+
+	for i := 0; i < b.N; i++ {
+		contains(list, "49999")
 	}
 }
