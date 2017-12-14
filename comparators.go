@@ -122,21 +122,214 @@ func greaterThanEqual(a, b interface{}) bool {
 	return !lessThan(a, b)
 }
 
-// contains will return true if a is contained in b
+// contains will return true if b is contained in a
 func contains(a, b interface{}) bool {
 	t1 := reflect.TypeOf(a)
+	t2 := reflect.TypeOf(b)
 
 	if t1.Kind() != reflect.Slice {
 		return false
 	}
 
-	s := reflect.ValueOf(a)
-	n := s.Len()
-	for i := 0; i < n; i++ {
-		if s.Index(i).Interface() == b {
+	switch t2.Kind() {
+	case reflect.String:
+		return containsString(a, b)
+	case reflect.Int:
+		return containsInt(a, b)
+	case reflect.Int8:
+		return containsInt8(a, b)
+	case reflect.Int16:
+		return containsInt16(a, b)
+	case reflect.Int32:
+		return containsInt32(a, b)
+	case reflect.Int64:
+		return containsInt64(a, b)
+	case reflect.Uint:
+		return containsUint(a, b)
+	case reflect.Uint8:
+		return containsUint8(a, b)
+	case reflect.Uint16:
+		return containsUint16(a, b)
+	case reflect.Uint32:
+		return containsUint32(a, b)
+	case reflect.Uint64:
+		return containsUint64(a, b)
+	case reflect.Float32:
+		return containsFloat32(a, b)
+	case reflect.Float64:
+		return containsFloat64(a, b)
+	default:
+		return false
+	}
+}
+
+// containsString will type assert a to []string, and assume b
+// is a string
+func containsString(a, b interface{}) bool {
+	as, ok := a.([]string)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(string) {
 			return true
 		}
 	}
+	return false
+}
 
+func containsInt(a, b interface{}) bool {
+	as, ok := a.([]int)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(int) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsInt8(a, b interface{}) bool {
+	as, ok := a.([]int8)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(int8) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsInt16(a, b interface{}) bool {
+	as, ok := a.([]int16)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(int16) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsInt32(a, b interface{}) bool {
+	as, ok := a.([]int32)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(int32) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsInt64(a, b interface{}) bool {
+	as, ok := a.([]int64)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(int64) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsUint(a, b interface{}) bool {
+	as, ok := a.([]uint)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(uint) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsUint8(a, b interface{}) bool {
+	as, ok := a.([]uint8)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(uint8) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsUint16(a, b interface{}) bool {
+	as, ok := a.([]uint16)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(uint16) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsUint32(a, b interface{}) bool {
+	as, ok := a.([]uint32)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(uint32) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsUint64(a, b interface{}) bool {
+	as, ok := a.([]uint64)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(uint64) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsFloat32(a, b interface{}) bool {
+	as, ok := a.([]float32)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(float32) {
+			return true
+		}
+	}
+	return false
+}
+
+func containsFloat64(a, b interface{}) bool {
+	as, ok := a.([]float64)
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if elem == b.(float64) {
+			return true
+		}
+	}
 	return false
 }

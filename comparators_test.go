@@ -192,6 +192,8 @@ func BenchmarkContainsLong50000(b *testing.B) {
 		list = append(list, fmt.Sprintf("%d", i))
 	}
 
+	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
 		contains(list, "49999")
 	}
