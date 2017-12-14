@@ -122,7 +122,9 @@ func greaterThanEqual(a, b interface{}) bool {
 	return !lessThan(a, b)
 }
 
-// contains will return true if b is contained in a
+// contains will return true if a contains b. We assume
+// that the first interface is a slice. If you need b to be a slice
+// consider using oneOf
 func contains(a, b interface{}) bool {
 	t1 := reflect.TypeOf(a)
 	t2 := reflect.TypeOf(b)
@@ -163,8 +165,6 @@ func contains(a, b interface{}) bool {
 	}
 }
 
-// containsString will type assert a to []string, and assume b
-// is a string
 func containsString(a, b interface{}) bool {
 	as, ok := a.([]string)
 	if !ok {
@@ -332,4 +332,9 @@ func containsFloat64(a, b interface{}) bool {
 		}
 	}
 	return false
+}
+
+// oneOf will return true if b contains a
+func oneOf(a, b interface{}) bool {
+	return contains(b, a)
 }

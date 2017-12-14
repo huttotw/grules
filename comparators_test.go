@@ -198,3 +198,20 @@ func BenchmarkContainsLong50000(b *testing.B) {
 		contains(list, "49999")
 	}
 }
+
+func TestOneOf(t *testing.T) {
+	cases := []testCase{
+		testCase{args: []interface{}{"a", []string{"a", "b"}}, expected: true},
+		testCase{args: []interface{}{"c", []string{"a", "b"}}, expected: false},
+		testCase{args: []interface{}{1, []string{"a", "b"}}, expected: false},
+		testCase{args: []interface{}{1, []int{1, 2}}, expected: true},
+		testCase{args: []interface{}{3, []int{1, 2}}, expected: false},
+		testCase{args: []interface{}{1.01, []float64{1.01, 1.02}}, expected: true},
+	}
+	for i, c := range cases {
+		res := oneOf(c.args[0], c.args[1])
+		if res != c.expected {
+			t.Fatalf("expected case %d to be %v, got %v", i, c.expected, res)
+		}
+	}
+}

@@ -21,6 +21,7 @@ var defaultComparators = map[string]Comparator{
 	"lt":       lessThan,
 	"lte":      lessThanEqual,
 	"contains": contains,
+	"oneof":    oneOf,
 }
 
 // Rule is a our smallest unit of measure, each rule will be
