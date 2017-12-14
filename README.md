@@ -58,18 +58,18 @@ res := e.Evaluate(props)
 
 # Benchmarks
 
-|Benchmark|N|Speed|
-|---------|----------|-----|
-|BenchmarkEqual-8|200000000|8.19 ns/op|
-|BenchmarkNotEqual-8|300000000|5.82 ns/op|
-|BenchmarkLessThan-8|50000000|31.8 ns/op|
-|BenchmarkLessThanEqual-8|50000000|26.9 ns/op|
-|BenchmarkGreaterThan-8|30000000|37.7 ns/op|
-|BenchmarkGreaterThanEqual-8|50000000|33.2 ns/op|
-|BenchmarkContains-8|10000000|131 ns/op|
-|BenchmarkContainsLong50000-8|500|2944142 ns/op|
-|BenchmarkPluckShallow-8|30000000|53.8 ns/op|
-|BenchmarkPluckDeep-8|5000000|311 ns/op|
+|Benchmark|N|Speed|Used|Allocs|
+|---------|----------|-----|------|------|
+|BenchmarkEqual-8|1000000000|7.26 ns/op|0 B/op|0 allocs/op|
+BenchmarkNotEqual-8|1000000000|4.95 ns/op|0 B/op|0 allocs/op|
+BenchmarkLessThan-8|500000000|10.9 ns/op|0 B/op|0 allocs/op|
+BenchmarkLessThanEqual-8|1000000000|7.79 ns/op|0 B/op|0 allocs/op|
+BenchmarkGreaterThan-8|200000000|18.1 ns/op|0 B/op|0 allocs/op|
+BenchmarkGreaterThanEqual-8|300000000|13.9 ns/op|0 B/op|0 allocs/op|
+BenchmarkContains-8|50000000|82.2 ns/op|64 B/op|2 allocs/op|
+BenchmarkContainsLong50000-8|20000|210011 ns/op|32 B/op|1 allocs/op|
+BenchmarkPluckShallow-8|100000000|60.2 ns/op|16 B/op|1 allocs/op|
+BenchmarkPluckDeep-8|20000000|242 ns/op|112 B/op|1 allocs/op|
 
 # License
 
