@@ -44,6 +44,18 @@ res := e.Evaluate(props)
 // res == true
 ```
 
+# Comparators
+* `eq` will return true if `a == b`
+* `neq` will return true if `a != b`
+* `lt` will return true if `a < b`
+* `lte` will return true if `a <= b`
+* `gt` will return true if `a > b`
+* `gte` will return true if `a >= b`
+* `contains` will return true if `a` contains `b`
+* `oneof` will return true if `a` is one of `b`
+
+`contains` is different than `oneof` in that `contains` expects the first argument to be a slice, and `oneof` expects the second argument to be a slice.
+
 # Benchmarks
 
 |Benchmark|N|Speed|
