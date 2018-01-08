@@ -203,6 +203,37 @@ func TestEngineEvaluate(t *testing.T) {
 
 	t.Run("1 composite, 1 rule", func(t *testing.T) {
 		props := map[string]interface{}{
+			"address": map[string]interface{}{
+				"bedroom": map[string]interface{}{
+					"furniture": []interface{}{
+						"bed",
+						"tv",
+						"dresser",
+					},
+				},
+			},
+		}
+		e := NewEngine()
+		e.Composites = []Composite{
+			Composite{
+				Operator: OperatorAnd,
+			Rules: []Rule{
+				Rule{
+					Comparator: "contains",
+					Path: "address.bedroom.furniture",
+					Value: "tv",
+				},
+			},
+			},	
+		}
+		res := e.Evaluate(props)
+		if res != true {
+			t.Fatal("expected engine to pass")
+		}
+	})
+
+	t.Run("2 composites, 1 rule", func(t *testing.T) {
+		props := map[string]interface{}{
 			"user": map[string]interface{}{
 				"email": "test@test.com",
 				"name":  "Trevor",

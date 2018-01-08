@@ -162,12 +162,12 @@ func BenchmarkGreaterThanEqual(b *testing.B) {
 
 func TestContains(t *testing.T) {
 	cases := []testCase{
-		testCase{args: []interface{}{[]string{"a", "b"}, "a"}, expected: true},
-		testCase{args: []interface{}{[]string{"a", "b"}, "c"}, expected: false},
-		testCase{args: []interface{}{[]string{"a", "b"}, 1}, expected: false},
-		testCase{args: []interface{}{[]int{1, 2}, 1}, expected: true},
-		testCase{args: []interface{}{[]int{1, 2}, 3}, expected: false},
-		testCase{args: []interface{}{[]float64{1.01, 1.02}, 1.01}, expected: true},
+		testCase{args: []interface{}{[]interface{}{"a", "b"}, "a"}, expected: true},
+		testCase{args: []interface{}{[]interface{}{"a", "b"}, "c"}, expected: false},
+		testCase{args: []interface{}{[]interface{}{"a", "b"}, 1}, expected: false},
+		testCase{args: []interface{}{[]interface{}{1, 2}, 1}, expected: true},
+		testCase{args: []interface{}{[]interface{}{1, 2}, 3}, expected: false},
+		testCase{args: []interface{}{[]interface{}{1.01, 1.02}, 1.01}, expected: true},
 	}
 
 	for i, c := range cases {
@@ -201,12 +201,12 @@ func BenchmarkContainsLong50000(b *testing.B) {
 
 func TestOneOf(t *testing.T) {
 	cases := []testCase{
-		testCase{args: []interface{}{"a", []string{"a", "b"}}, expected: true},
-		testCase{args: []interface{}{"c", []string{"a", "b"}}, expected: false},
-		testCase{args: []interface{}{1, []string{"a", "b"}}, expected: false},
-		testCase{args: []interface{}{1, []int{1, 2}}, expected: true},
-		testCase{args: []interface{}{3, []int{1, 2}}, expected: false},
-		testCase{args: []interface{}{1.01, []float64{1.01, 1.02}}, expected: true},
+		testCase{args: []interface{}{"a", []interface{}{"a", "b"}}, expected: true},
+		testCase{args: []interface{}{"c", []interface{}{"a", "b"}}, expected: false},
+		testCase{args: []interface{}{1, []interface{}{"a", "b"}}, expected: false},
+		testCase{args: []interface{}{1, []interface{}{1, 2}}, expected: true},
+		testCase{args: []interface{}{3, []interface{}{1, 2}}, expected: false},
+		testCase{args: []interface{}{1.01, []interface{}{1.01, 1.02}}, expected: true},
 	}
 	for i, c := range cases {
 		res := oneOf(c.args[0], c.args[1])

@@ -166,12 +166,12 @@ func contains(a, b interface{}) bool {
 }
 
 func containsString(a, b interface{}) bool {
-	as, ok := a.([]string)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(string) {
+		if val, ok := elem.(string); ok && val == b.(string) {
 			return true
 		}
 	}
@@ -179,12 +179,12 @@ func containsString(a, b interface{}) bool {
 }
 
 func containsInt(a, b interface{}) bool {
-	as, ok := a.([]int)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(int) {
+		if val, ok := elem.(int); ok && val == b.(int) {
 			return true
 		}
 	}
@@ -192,12 +192,12 @@ func containsInt(a, b interface{}) bool {
 }
 
 func containsInt8(a, b interface{}) bool {
-	as, ok := a.([]int8)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(int8) {
+		if val, ok := elem.(int8); ok && val == b.(int8) {
 			return true
 		}
 	}
@@ -205,12 +205,12 @@ func containsInt8(a, b interface{}) bool {
 }
 
 func containsInt16(a, b interface{}) bool {
-	as, ok := a.([]int16)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(int16) {
+		if val, ok := elem.(int16); ok && val == b.(int16) {
 			return true
 		}
 	}
@@ -218,12 +218,12 @@ func containsInt16(a, b interface{}) bool {
 }
 
 func containsInt32(a, b interface{}) bool {
-	as, ok := a.([]int32)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(int32) {
+		if val, ok := elem.(int32); ok && val == b.(int32) {
 			return true
 		}
 	}
@@ -231,12 +231,12 @@ func containsInt32(a, b interface{}) bool {
 }
 
 func containsInt64(a, b interface{}) bool {
-	as, ok := a.([]int64)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(int64) {
+		if val, ok := elem.(int64); ok && val == b.(int64) {
 			return true
 		}
 	}
@@ -244,12 +244,12 @@ func containsInt64(a, b interface{}) bool {
 }
 
 func containsUint(a, b interface{}) bool {
-	as, ok := a.([]uint)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(uint) {
+		if val, ok := elem.(uint); ok && val == b.(uint) {
 			return true
 		}
 	}
@@ -257,12 +257,12 @@ func containsUint(a, b interface{}) bool {
 }
 
 func containsUint8(a, b interface{}) bool {
-	as, ok := a.([]uint8)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(uint8) {
+		if val, ok := elem.(uint8); ok && val == b.(uint8) {
 			return true
 		}
 	}
@@ -270,12 +270,12 @@ func containsUint8(a, b interface{}) bool {
 }
 
 func containsUint16(a, b interface{}) bool {
-	as, ok := a.([]uint16)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(uint16) {
+		if val, ok := elem.(uint16); ok && val == b.(uint16) {
 			return true
 		}
 	}
@@ -283,12 +283,12 @@ func containsUint16(a, b interface{}) bool {
 }
 
 func containsUint32(a, b interface{}) bool {
-	as, ok := a.([]uint32)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(uint32) {
+		if val, ok := elem.(uint32); ok && val == b.(uint32) {
 			return true
 		}
 	}
@@ -296,12 +296,12 @@ func containsUint32(a, b interface{}) bool {
 }
 
 func containsUint64(a, b interface{}) bool {
-	as, ok := a.([]uint64)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(uint64) {
+		if val, ok := elem.(uint64); ok && val == b.(uint64) {
 			return true
 		}
 	}
@@ -309,12 +309,12 @@ func containsUint64(a, b interface{}) bool {
 }
 
 func containsFloat32(a, b interface{}) bool {
-	as, ok := a.([]float32)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(float32) {
+		if val, ok := elem.(float32); ok && val == b.(float32) {
 			return true
 		}
 	}
@@ -322,12 +322,12 @@ func containsFloat32(a, b interface{}) bool {
 }
 
 func containsFloat64(a, b interface{}) bool {
-	as, ok := a.([]float64)
+	as, ok := a.([]interface{})
 	if !ok {
 		return false
 	}
 	for _, elem := range as {
-		if elem == b.(float64) {
+		if val, ok := elem.(float64); ok && val == b.(float64) {
 			return true
 		}
 	}
