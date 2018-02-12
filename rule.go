@@ -2,8 +2,7 @@ package grules
 
 import (
 	"encoding/json"
-	"fmt"
-	"reflect"
+	"math"
 )
 
 const (
@@ -118,39 +117,9 @@ func (c Composite) evaluate(props map[string]interface{}, comps map[string]Compa
 // Evaluate will return true if the rule is true, false otherwise
 func (r Rule) evaluate(props map[string]interface{}, comps map[string]Comparator) bool {
 	// Make sure we can get a value from the props
-	inter := pluck(props, r.Path)
-	if inter == nil {
+	val := pluck(props, r.Path)
+	if val == nil {
 		return false
-	}
-
-	// This is an important step, we need to get numbers to their most
-	// precise type, because that is how the mapper works
-	var val interface{}
-	switch inter.(type) {
-	case uint:
-		val = float64(inter.(uint))
-	case uint8:
-		val = float64(inter.(uint8))
-	case uint16:
-		val = float64(inter.(uint16))
-	case uint32:
-		val = float64(inter.(uint32))
-	case uint64:
-		val = float64(inter.(uint64))
-	case int:
-		val = float64(inter.(int))
-	case int8:
-		val = float64(inter.(int8))
-	case int16:
-		val = float64(inter.(int16))
-	case int32:
-		val = float64(inter.(int32))
-	case int64:
-		val = float64(inter.(int64))
-	case float32:
-		val = float64(inter.(float32))
-	default:
-		val = inter
 	}
 
 	comp, ok := comps[r.Comparator]
@@ -158,6 +127,40 @@ func (r Rule) evaluate(props map[string]interface{}, comps map[string]Comparator
 		return false
 	}
 
-	fmt.Println(reflect.TypeOf(val), reflect.TypeOf(r.Value))
 	return comp(val, r.Value)
+}
+
+// UnmarshalJSON will unmarshal a rule, converting any integers to int64 and
+// floats to float64s. This is important because of how we can pass data
+// as props
+func (r *Rule) UnmarshalJSON(data []byte) error {
+	var m map[string]interface{}
+	err := json.Unmarshal(data, &m)
+	if err != nil {
+		return err
+	}
+
+	var val interface{}
+	switch m["value"].(type) {
+	case float64:
+		if math.Floor(m["value"].(float64))-m["value"].(float64) == 0 {
+			val = int64(m["value"].(float64))
+		} else {
+			val = m["value"]
+		}
+	default:
+		val = m["value"]
+	}
+
+	if m["comparator"] != nil {
+		r.Comparator = m["comparator"].(string)
+	}
+
+	if m["path"] != nil {
+		r.Path = m["path"].(string)
+	}
+
+	r.Value = val
+
+	return nil
 }

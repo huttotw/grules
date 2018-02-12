@@ -1,6 +1,8 @@
 package grules
 
 import (
+	"encoding/json"
+	"reflect"
 	"testing"
 )
 
@@ -217,14 +219,14 @@ func TestEngineEvaluate(t *testing.T) {
 		e.Composites = []Composite{
 			Composite{
 				Operator: OperatorAnd,
-			Rules: []Rule{
-				Rule{
-					Comparator: "contains",
-					Path: "address.bedroom.furniture",
-					Value: "tv",
+				Rules: []Rule{
+					Rule{
+						Comparator: "contains",
+						Path:       "address.bedroom.furniture",
+						Value:      "tv",
+					},
 				},
 			},
-			},	
 		}
 		res := e.Evaluate(props)
 		if res != true {
@@ -276,6 +278,47 @@ func TestEngineEvaluate(t *testing.T) {
 		res := e.Evaluate(props)
 		if res != true {
 			t.Fatal("expected engine to pass")
+		}
+	})
+}
+
+func TestRuleUnmarshalJSON(t *testing.T) {
+	t.Run("string", func(t *testing.T) {
+		b := []byte(`{"path":"name","comparator":"eq","value":"trevor"}`)
+		var r Rule
+		err := json.Unmarshal(b, &r)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if reflect.TypeOf(r.Value).Kind() != reflect.String {
+			t.Fatal("expected value to be of type string")
+		}
+	})
+
+	t.Run("int64", func(t *testing.T) {
+		b := []byte(`{"path":"name","comparator":"eq","value":1}`)
+		var r Rule
+		err := json.Unmarshal(b, &r)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if reflect.TypeOf(r.Value).Kind() != reflect.Int64 {
+			t.Fatal("expected value to be of type int64")
+		}
+	})
+
+	t.Run("float64", func(t *testing.T) {
+		b := []byte(`{"path":"name","comparator":"eq","value":1.1}`)
+		var r Rule
+		err := json.Unmarshal(b, &r)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if reflect.TypeOf(r.Value).Kind() != reflect.Float64 {
+			t.Fatal("expected value to be of type float64")
 		}
 	})
 }
