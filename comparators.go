@@ -114,11 +114,21 @@ func lessThanEqual(a, b interface{}) bool {
 
 // greaterThan will return true if a > b
 func greaterThan(a, b interface{}) bool {
+	// We need to check the types here because, lessThanEqual will
+	// return false if the types do not match.
+	if reflect.TypeOf(a) != reflect.TypeOf(b) {
+		return false
+	}
 	return !lessThanEqual(a, b)
 }
 
 // greaterThanEqual will return true if a >= b
 func greaterThanEqual(a, b interface{}) bool {
+	// We need to check the types here because, lessThan will
+	// return false if the types do not match.
+	if reflect.TypeOf(a) != reflect.TypeOf(b) {
+		return false
+	}
 	return !lessThan(a, b)
 }
 
