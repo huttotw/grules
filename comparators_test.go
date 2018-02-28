@@ -14,10 +14,10 @@ func TestEqual(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{"a", "a"}, expected: true},
 		testCase{args: []interface{}{"a", "b"}, expected: false},
-		testCase{args: []interface{}{1, 1}, expected: true},
-		testCase{args: []interface{}{1, 0}, expected: false},
-		testCase{args: []interface{}{1.1, 1.1}, expected: true},
-		testCase{args: []interface{}{1.1, 0.1}, expected: false},
+		testCase{args: []interface{}{float64(1), float64(1)}, expected: true},
+		testCase{args: []interface{}{float64(1), float64(0)}, expected: false},
+		testCase{args: []interface{}{float64(1.1), float64(1.1)}, expected: true},
+		testCase{args: []interface{}{float64(1.1), float64(0.1)}, expected: false},
 	}
 
 	for i, c := range cases {
@@ -38,10 +38,10 @@ func TestNotEqual(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{"a", "a"}, expected: false},
 		testCase{args: []interface{}{"a", "b"}, expected: true},
-		testCase{args: []interface{}{1, 1}, expected: false},
-		testCase{args: []interface{}{1, 0}, expected: true},
-		testCase{args: []interface{}{1.1, 1.1}, expected: false},
-		testCase{args: []interface{}{1.1, 0.1}, expected: true},
+		testCase{args: []interface{}{float64(1), float64(1)}, expected: false},
+		testCase{args: []interface{}{float64(1), float64(0)}, expected: true},
+		testCase{args: []interface{}{float64(1.1), float64(1.1)}, expected: false},
+		testCase{args: []interface{}{float64(1.1), float64(0.1)}, expected: true},
 	}
 
 	for i, c := range cases {
@@ -62,10 +62,10 @@ func TestLessThan(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{"a", "a"}, expected: false},
 		testCase{args: []interface{}{"a", "b"}, expected: true},
-		testCase{args: []interface{}{1, 1}, expected: false},
-		testCase{args: []interface{}{0, 1}, expected: true},
-		testCase{args: []interface{}{1.1, 1.1}, expected: false},
-		testCase{args: []interface{}{1.1, 1.2}, expected: true},
+		testCase{args: []interface{}{float64(1), float64(1)}, expected: false},
+		testCase{args: []interface{}{float64(0), float64(1)}, expected: true},
+		testCase{args: []interface{}{float64(1.1), float64(1.1)}, expected: false},
+		testCase{args: []interface{}{float64(1.1), float64(1.2)}, expected: true},
 	}
 
 	for i, c := range cases {
@@ -87,12 +87,12 @@ func TestLessThanEqual(t *testing.T) {
 		testCase{args: []interface{}{"a", "a"}, expected: true},
 		testCase{args: []interface{}{"a", "b"}, expected: true},
 		testCase{args: []interface{}{"c", "b"}, expected: false},
-		testCase{args: []interface{}{1, 1}, expected: true},
-		testCase{args: []interface{}{0, 1}, expected: true},
-		testCase{args: []interface{}{1, 0}, expected: false},
-		testCase{args: []interface{}{1.1, 1.1}, expected: true},
-		testCase{args: []interface{}{1.1, 1.2}, expected: true},
-		testCase{args: []interface{}{1.2, 1.1}, expected: false},
+		testCase{args: []interface{}{float64(1), float64(1)}, expected: true},
+		testCase{args: []interface{}{float64(0), float64(1)}, expected: true},
+		testCase{args: []interface{}{float64(1), float64(0)}, expected: false},
+		testCase{args: []interface{}{float64(1.1), float64(1.1)}, expected: true},
+		testCase{args: []interface{}{float64(1.1), float64(1.2)}, expected: true},
+		testCase{args: []interface{}{float64(1.2), float64(1.1)}, expected: false},
 	}
 
 	for i, c := range cases {
@@ -113,10 +113,10 @@ func TestGreaterThan(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{"a", "a"}, expected: false},
 		testCase{args: []interface{}{"b", "a"}, expected: true},
-		testCase{args: []interface{}{1, 1}, expected: false},
-		testCase{args: []interface{}{1, 0}, expected: true},
-		testCase{args: []interface{}{1.1, 1.1}, expected: false},
-		testCase{args: []interface{}{1.2, 1.1}, expected: true},
+		testCase{args: []interface{}{float64(1), float64(1)}, expected: false},
+		testCase{args: []interface{}{float64(1), float64(0)}, expected: true},
+		testCase{args: []interface{}{float64(1.1), float64(1.1)}, expected: false},
+		testCase{args: []interface{}{float64(1.2), float64(1.1)}, expected: true},
 	}
 
 	for i, c := range cases {
@@ -138,12 +138,12 @@ func TestGreaterThanEqual(t *testing.T) {
 		testCase{args: []interface{}{"a", "a"}, expected: true},
 		testCase{args: []interface{}{"a", "b"}, expected: false},
 		testCase{args: []interface{}{"c", "b"}, expected: true},
-		testCase{args: []interface{}{1, 1}, expected: true},
-		testCase{args: []interface{}{0, 1}, expected: false},
-		testCase{args: []interface{}{1, 0}, expected: true},
-		testCase{args: []interface{}{1.1, 1.1}, expected: true},
-		testCase{args: []interface{}{1.1, 1.2}, expected: false},
-		testCase{args: []interface{}{1.2, 1.1}, expected: true},
+		testCase{args: []interface{}{float64(1), float64(1)}, expected: true},
+		testCase{args: []interface{}{float64(0), float64(1)}, expected: false},
+		testCase{args: []interface{}{float64(1), float64(0)}, expected: true},
+		testCase{args: []interface{}{float64(1.1), float64(1.1)}, expected: true},
+		testCase{args: []interface{}{float64(1.1), float64(1.2)}, expected: false},
+		testCase{args: []interface{}{float64(1.2), float64(1.1)}, expected: true},
 	}
 
 	for i, c := range cases {
@@ -164,10 +164,10 @@ func TestContains(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{[]interface{}{"a", "b"}, "a"}, expected: true},
 		testCase{args: []interface{}{[]interface{}{"a", "b"}, "c"}, expected: false},
-		testCase{args: []interface{}{[]interface{}{"a", "b"}, 1}, expected: false},
-		testCase{args: []interface{}{[]interface{}{1, 2}, 1}, expected: true},
-		testCase{args: []interface{}{[]interface{}{1, 2}, 3}, expected: false},
-		testCase{args: []interface{}{[]interface{}{1.01, 1.02}, 1.01}, expected: true},
+		testCase{args: []interface{}{[]interface{}{"a", "b"}, float64(1)}, expected: false},
+		testCase{args: []interface{}{[]interface{}{float64(1), float64(2)}, float64(1)}, expected: true},
+		testCase{args: []interface{}{[]interface{}{float64(1), float64(2)}, float64(3)}, expected: false},
+		testCase{args: []interface{}{[]interface{}{float64(1.01), float64(1.02)}, float64(1.01)}, expected: true},
 	}
 
 	for i, c := range cases {
@@ -203,10 +203,10 @@ func TestOneOf(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{"a", []interface{}{"a", "b"}}, expected: true},
 		testCase{args: []interface{}{"c", []interface{}{"a", "b"}}, expected: false},
-		testCase{args: []interface{}{1, []interface{}{"a", "b"}}, expected: false},
-		testCase{args: []interface{}{1, []interface{}{1, 2}}, expected: true},
-		testCase{args: []interface{}{3, []interface{}{1, 2}}, expected: false},
-		testCase{args: []interface{}{1.01, []interface{}{1.01, 1.02}}, expected: true},
+		testCase{args: []interface{}{float64(1), []interface{}{"a", "b"}}, expected: false},
+		testCase{args: []interface{}{float64(1), []interface{}{float64(1), float64(2)}}, expected: true},
+		testCase{args: []interface{}{float64(3), []interface{}{float64(1), float64(2)}}, expected: false},
+		testCase{args: []interface{}{float64(1.01), []interface{}{float64(1.01), float64(1.02)}}, expected: true},
 	}
 	for i, c := range cases {
 		res := oneOf(c.args[0], c.args[1])
