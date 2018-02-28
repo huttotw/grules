@@ -3,6 +3,8 @@ This package was created with inspiration from Thomas' [go-ruler](https://github
 
 This version includes a couple more features including, AND and OR composites and the ability to add custom comparators.
 
+**Note**: This package only compares two types: `string` and `float64`, this plays nicely with `encoding/json`.
+
 # Example
 ```go
 // Create a new instance of an engine with some default comparators
@@ -71,9 +73,14 @@ BenchmarkContainsLong50000-8|100000000|55.6 ns/op|32 B/op|1 allocs/op|
 BenchmarkPluckShallow-8|100000000|60.2 ns/op|16 B/op|1 allocs/op|
 BenchmarkPluckDeep-8|20000000|242 ns/op|112 B/op|1 allocs/op|
 
+To run benchmarks:
+```
+go test -run none -bench . -benchtime 3s -benchmem
+```
+
 # License
 
-Copyright 2017 Trevor Hutto
+Copyright &copy; 2018 Trevor Hutto
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this work except in compliance with the License. You may obtain a copy of the License in the LICENSE file, or at:
 

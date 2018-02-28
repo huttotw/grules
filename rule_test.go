@@ -1,8 +1,6 @@
 package grules
 
 import (
-	"encoding/json"
-	"reflect"
 	"testing"
 )
 
@@ -68,7 +66,7 @@ func TestCompositeEvaluate(t *testing.T) {
 	}
 	props := map[string]interface{}{
 		"name": "Trevor",
-		"age":  23,
+		"age":  float64(23),
 	}
 
 	t.Run("and", func(t *testing.T) {
@@ -83,7 +81,7 @@ func TestCompositeEvaluate(t *testing.T) {
 				Rule{
 					Comparator: "eq",
 					Path:       "age",
-					Value:      23,
+					Value:      float64(23),
 				},
 			},
 		}
@@ -105,7 +103,7 @@ func TestCompositeEvaluate(t *testing.T) {
 				Rule{
 					Comparator: "eq",
 					Path:       "age",
-					Value:      23,
+					Value:      float64(23),
 				},
 			},
 		}
@@ -127,7 +125,7 @@ func TestCompositeEvaluate(t *testing.T) {
 				Rule{
 					Comparator: "eq",
 					Path:       "age",
-					Value:      23,
+					Value:      float64(23),
 				},
 			},
 		}
@@ -193,7 +191,7 @@ func TestEngineEvaluate(t *testing.T) {
 			"user": map[string]interface{}{
 				"email": "test@test.com",
 				"name":  "Trevor",
-				"id":    1234,
+				"id":    float64(1234),
 			},
 		}
 		e := NewEngine()
@@ -239,7 +237,7 @@ func TestEngineEvaluate(t *testing.T) {
 			"user": map[string]interface{}{
 				"email": "test@test.com",
 				"name":  "Trevor",
-				"id":    1234,
+				"id":    float64(1234),
 			},
 		}
 		e := NewEngine()
@@ -255,7 +253,7 @@ func TestEngineEvaluate(t *testing.T) {
 					Rule{
 						Comparator: "eq",
 						Path:       "user.id",
-						Value:      1234,
+						Value:      float64(1234),
 					},
 				},
 			},
@@ -270,7 +268,7 @@ func TestEngineEvaluate(t *testing.T) {
 					Rule{
 						Comparator: "eq",
 						Path:       "user.id",
-						Value:      7,
+						Value:      float64(7),
 					},
 				},
 			},
@@ -278,47 +276,6 @@ func TestEngineEvaluate(t *testing.T) {
 		res := e.Evaluate(props)
 		if res != true {
 			t.Fatal("expected engine to pass")
-		}
-	})
-}
-
-func TestRuleUnmarshalJSON(t *testing.T) {
-	t.Run("string", func(t *testing.T) {
-		b := []byte(`{"path":"name","comparator":"eq","value":"trevor"}`)
-		var r Rule
-		err := json.Unmarshal(b, &r)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		if reflect.TypeOf(r.Value).Kind() != reflect.String {
-			t.Fatal("expected value to be of type string")
-		}
-	})
-
-	t.Run("int64", func(t *testing.T) {
-		b := []byte(`{"path":"name","comparator":"eq","value":1}`)
-		var r Rule
-		err := json.Unmarshal(b, &r)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		if reflect.TypeOf(r.Value).Kind() != reflect.Int64 {
-			t.Fatal("expected value to be of type int64")
-		}
-	})
-
-	t.Run("float64", func(t *testing.T) {
-		b := []byte(`{"path":"name","comparator":"eq","value":1.1}`)
-		var r Rule
-		err := json.Unmarshal(b, &r)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		if reflect.TypeOf(r.Value).Kind() != reflect.Float64 {
-			t.Fatal("expected value to be of type float64")
 		}
 	})
 }
