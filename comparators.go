@@ -70,11 +70,6 @@ func lessThanEqual(a, b interface{}) bool {
 
 // greaterThan will return true if a > b
 func greaterThan(a, b interface{}) bool {
-	// If the values are equal, no more work necessary
-	if a == b {
-		return true
-	}
-
 	ta := reflect.TypeOf(a)
 	tb := reflect.TypeOf(b)
 
