@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/huttotw/grules/tree/master.svg?style=svg)](https://circleci.com/gh/huttotw/grules/tree/master)
+
 # Introduction
 This package was created with inspiration from Thomas' [go-ruler](https://github.com/hopkinsth/go-ruler) to run a simple set of rules against an entity.
 
