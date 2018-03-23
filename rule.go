@@ -14,14 +14,15 @@ const (
 // defaultComparators is a map of all the default comparators that
 // a new engine should include
 var defaultComparators = map[string]Comparator{
-	"eq":       equal,
-	"ne":       notEqual,
-	"gt":       greaterThan,
-	"gte":      greaterThanEqual,
-	"lt":       lessThan,
-	"lte":      lessThanEqual,
-	"contains": contains,
-	"oneof":    oneOf,
+	"eq":        equal,
+	"ne":        notEqual,
+	"gt":        greaterThan,
+	"gte":       greaterThanEqual,
+	"lt":        lessThan,
+	"lte":       lessThanEqual,
+	"contains":  contains,
+	"ncontains": notContains,
+	"oneof":     oneOf,
 }
 
 // Rule is a our smallest unit of measure, each rule will be
