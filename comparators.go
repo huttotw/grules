@@ -164,6 +164,53 @@ func containsFloat64(a, b interface{}) bool {
 	return false
 }
 
+// notContains will return true if the b is not contained a. This will also return
+// true if a is a slice of different types than b. It will return false if a
+// is not a slice.
+func notContains(a, b interface{}) bool {
+	t1 := reflect.TypeOf(a)
+	t2 := reflect.TypeOf(b)
+
+	if t1.Kind() != reflect.Slice {
+		return false
+	}
+
+	switch t2.Kind() {
+	case reflect.String:
+		return notContainsString(a, b)
+	case reflect.Float64:
+		return notContainsFloat64(a, b)
+	default:
+		return false
+	}
+}
+
+func notContainsString(a, b interface{}) bool {
+	as, ok := a.([]interface{})
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if val, ok := elem.(string); ok && val == b.(string) {
+			return false
+		}
+	}
+	return true
+}
+
+func notContainsFloat64(a, b interface{}) bool {
+	as, ok := a.([]interface{})
+	if !ok {
+		return false
+	}
+	for _, elem := range as {
+		if val, ok := elem.(float64); ok && val == b.(float64) {
+			return false
+		}
+	}
+	return true
+}
+
 // oneOf will return true if b contains a
 func oneOf(a, b interface{}) bool {
 	return contains(b, a)

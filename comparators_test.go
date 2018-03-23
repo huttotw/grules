@@ -199,6 +199,45 @@ func BenchmarkContainsLong50000(b *testing.B) {
 	}
 }
 
+func TestNotContains(t *testing.T) {
+	cases := []testCase{
+		testCase{args: []interface{}{[]interface{}{"a", "b"}, "a"}, expected: false},
+		testCase{args: []interface{}{[]interface{}{"a", "b"}, "c"}, expected: true},
+		testCase{args: []interface{}{[]interface{}{"a", "b"}, float64(1)}, expected: true},
+		testCase{args: []interface{}{[]interface{}{float64(1), float64(2)}, float64(1)}, expected: false},
+		testCase{args: []interface{}{[]interface{}{float64(1), float64(2)}, float64(3)}, expected: true},
+		testCase{args: []interface{}{[]interface{}{float64(1.01), float64(1.02)}, float64(1.01)}, expected: false},
+	}
+
+	for i, c := range cases {
+		res := notContains(c.args[0], c.args[1])
+		if res != c.expected {
+			t.Fatalf("expected case %d to be %v, got %v", i, c.expected, res)
+		}
+	}
+}
+
+func BenchmarkNotContains(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		contains([]string{"1", "2"}, "3")
+	}
+}
+
+func BenchmarkNotContainsLong50000(b *testing.B) {
+	var list []string
+
+	// Simulate a list of postal codes
+	for i := 0; i < 50000; i++ {
+		list = append(list, fmt.Sprintf("%d", i))
+	}
+
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		contains(list, "50000")
+	}
+}
+
 func TestOneOf(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{"a", []interface{}{"a", "b"}}, expected: true},
