@@ -72,6 +72,8 @@ BenchmarkGreaterThan-8|200000000|18.1 ns/op|0 B/op|0 allocs/op|
 BenchmarkGreaterThanEqual-8|300000000|13.9 ns/op|0 B/op|0 allocs/op|
 BenchmarkContains-8|50000000|73.0 ns/op|64 B/op|2 allocs/op|
 BenchmarkContainsLong50000-8|100000000|55.6 ns/op|32 B/op|1 allocs/op|
+BenchmarkNotContains-8|50000000|75.1 ns/op|64 B/op|2 allocs/op|
+BenchmarkNotContainsLong50000-8|100000000|56.2 ns/op|32 B/op|1 allocs/op|
 BenchmarkPluckShallow-8|100000000|60.2 ns/op|16 B/op|1 allocs/op|
 BenchmarkPluckDeep-8|20000000|242 ns/op|112 B/op|1 allocs/op|
 
