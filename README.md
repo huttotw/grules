@@ -33,6 +33,23 @@ e.Composites = []Composite{
                 Value: "Trevor",
             },
         },
+        Composites: []Composite{
+            Composite{
+                Operator: OperatorAnd,
+                Rules: []Rule{
+                    Rule{
+                        Comparator: "gt",
+                        Path: "user.age",
+                        Value: float64(20),
+                    },
+                    Rule{
+                        Comparator: "lt",
+                        Path: "user.age",
+                        Value: float64(30),
+                    },
+                },
+            },
+        }
     },
 }
 
@@ -40,6 +57,7 @@ e.Composites = []Composite{
 props := map[string]interface{}{
     "user": map[string]interface{}{
         "name": "Trevor",
+        "age": float64(25),
     }
 }
 
