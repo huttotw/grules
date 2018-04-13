@@ -15,7 +15,7 @@ const (
 // a new engine should include
 var defaultComparators = map[string]Comparator{
 	"eq":        equal,
-	"ne":        notEqual,
+	"neq":       notEqual,
 	"gt":        greaterThan,
 	"gte":       greaterThanEqual,
 	"lt":        lessThan,
