@@ -201,6 +201,7 @@ func BenchmarkContainsLong50000(b *testing.B) {
 
 func TestNotContains(t *testing.T) {
 	cases := []testCase{
+		testCase{args: []interface{}{[]interface{}{}, "a"}, expected: true},
 		testCase{args: []interface{}{[]interface{}{"a", "b"}, "a"}, expected: false},
 		testCase{args: []interface{}{[]interface{}{"a", "b"}, "c"}, expected: true},
 		testCase{args: []interface{}{[]interface{}{"a", "b"}, float64(1)}, expected: true},
