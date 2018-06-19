@@ -203,6 +203,7 @@ func notContainsFloat64(a, b interface{}) bool {
 	if !ok {
 		return false
 	}
+
 	for _, elem := range as {
 		if val, ok := elem.(float64); ok && val == b.(float64) {
 			return false
@@ -214,4 +215,9 @@ func notContainsFloat64(a, b interface{}) bool {
 // oneOf will return true if b contains a
 func oneOf(a, b interface{}) bool {
 	return contains(b, a)
+}
+
+// noneOf will return true if b does not contain a
+func noneOf(a, b interface{}) bool {
+	return notContains(b, a)
 }
