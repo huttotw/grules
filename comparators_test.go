@@ -239,6 +239,12 @@ func BenchmarkNotContainsLong50000(b *testing.B) {
 	}
 }
 
+func BenchmarkOneOf(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		oneOf("2", []string{"1", "2"})
+	}
+}
+
 func TestOneOf(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{"a", []interface{}{"a", "b"}}, expected: true},
@@ -250,6 +256,31 @@ func TestOneOf(t *testing.T) {
 	}
 	for i, c := range cases {
 		res := oneOf(c.args[0], c.args[1])
+		if res != c.expected {
+			t.Fatalf("expected case %d to be %v, got %v", i, c.expected, res)
+		}
+	}
+}
+
+func BenchmarkNoneOf(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		noneOf("2", []string{"1", "2"})
+	}
+}
+
+func TestNoneOf(t *testing.T) {
+	cases := []testCase{
+		testCase{args: []interface{}{"a", []interface{}{"a", "b"}}, expected: false},
+		testCase{args: []interface{}{"c", []interface{}{"a", "b"}}, expected: true},
+		testCase{args: []interface{}{float64(1), []interface{}{"a", "b"}}, expected: true},
+		testCase{args: []interface{}{float64(1), []interface{}{float64(1), float64(2)}}, expected: false},
+		testCase{args: []interface{}{float64(3), []interface{}{float64(1), float64(2)}}, expected: true},
+		testCase{args: []interface{}{float64(1.01), []interface{}{float64(1.01), float64(1.02)}}, expected: false},
+		testCase{args: []interface{}{float64(1.03), []interface{}{float64(1.01), float64(1.02)}}, expected: true},
+	}
+
+	for i, c := range cases {
+		res := noneOf(c.args[0], c.args[1])
 		if res != c.expected {
 			t.Fatalf("expected case %d to be %v, got %v", i, c.expected, res)
 		}
