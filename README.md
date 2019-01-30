@@ -87,6 +87,10 @@ To run benchmarks:
 go test -run none -bench . -benchtime 3s -benchmem
 ```
 
+All benchmarks were run on:
+ 
+ MacOS High Sierra 2.6Ghz Intel Core i7 16 GB 2400 MHz DDR4
+
 # License
 
 Copyright &copy; 2018 Trevor Hutto
