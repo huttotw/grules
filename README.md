@@ -64,20 +64,23 @@ res := e.Evaluate(props)
 
 |Benchmark|N|Speed|Used|Allocs|
 |---------|----------|-----|------|------|
-|BenchmarkEqual-8|1000000000|7.26 ns/op|0 B/op|0 allocs/op|
-BenchmarkNotEqual-8|1000000000|4.95 ns/op|0 B/op|0 allocs/op|
-BenchmarkLessThan-8|500000000|10.9 ns/op|0 B/op|0 allocs/op|
-BenchmarkLessThanEqual-8|1000000000|7.79 ns/op|0 B/op|0 allocs/op|
-BenchmarkGreaterThan-8|200000000|18.1 ns/op|0 B/op|0 allocs/op|
-BenchmarkGreaterThanEqual-8|300000000|13.9 ns/op|0 B/op|0 allocs/op|
-BenchmarkContains-8|50000000|73.0 ns/op|64 B/op|2 allocs/op|
-BenchmarkContainsLong50000-8|100000000|55.6 ns/op|32 B/op|1 allocs/op|
-BenchmarkNotContains-8|50000000|75.1 ns/op|64 B/op|2 allocs/op|
-BenchmarkNotContainsLong50000-8|100000000|56.2 ns/op|32 B/op|1 allocs/op|
-BenchmarkOneOf|50000000|70.5 ns/op|64 B/op|2 allocs/op|
-BenchmarkNoneOf|100000000|71.7 ns/op|64 B/op|2 allocs/op|
-BenchmarkPluckShallow-8|100000000|60.2 ns/op|16 B/op|1 allocs/op|
-BenchmarkPluckDeep-8|20000000|242 ns/op|112 B/op|1 allocs/op|
+|BenchmarkEqual-12|1000000000|5.22 ns/op|0 B/op|0 allocs/op|
+|BenchmarkNotEqual-12|2000000000|3.77 ns/op|0 B/op|0 allocs/op|
+|BenchmarkLessThan-12|2000000000|2.20 ns/op|0 B/op|0 allocs/op|
+|BenchmarkLessThanEqual-12|2000000000|1.95 ns/op|0 B/op|0 allocs/op|
+|BenchmarkGreaterThan-12|5000000000|1.95 ns/op|0 B/op|0 allocs/op|
+|BenchmarkGreaterThanEqual-12|2000000000|1.97 ns/op|0 B/op|0 allocs/op|
+|BenchmarkContains-12|1000000000|5.66 ns/op|0 B/op|0 allocs/op|
+|BenchmarkContainsLong50000-12|30000|157679 ns/op|0 B/op|0 allocs/op|
+|BenchmarkNotContains-12|500000000|11.5 ns/op|0 B/op|0 allocs/op|
+|BenchmarkNotContainsLong50000-12|30000|157437 ns/op|0 B/op|0 allocs/op|
+|BenchmarkOneOf-12|500000000|11.0 ns/op|0 B/op|0 allocs/op|
+|BenchmarkNoneOf-12|500000000|10.7 ns/op|0 B/op|0 allocs/op|
+|BenchmarkPluckShallow-12|100000000|42.4 ns/op|16 B/op|1 allocs/op|
+|BenchmarkPluckDeep-12|30000000|174 ns/op|112 B/op|1 allocs/op|
+|BenchmarkRule_evaluate-12|100000000|51.7 ns/op|16 B/op|1 allocs/op|
+|BenchmarkComposite_evaluate-12|100000000|58.9 ns/op|16 B/op|1 allocs/op|
+|BenchmarkEngine_Evaluate-12|100000000|69.9 ns/op|16 B/op|1 allocs/op|
 
 To run benchmarks:
 ```
