@@ -278,4 +278,35 @@ func TestEngineEvaluate(t *testing.T) {
 			t.Fatal("expected engine to pass")
 		}
 	})
+
+	t.Run("1 composites, 1 rule, strictly typed list", func(t *testing.T) {
+		props := map[string]interface{}{
+			"user": map[string]interface{}{
+				"email": "test@test.com",
+				"name":  "Trevor",
+				"id":    float64(1234),
+				"favorites": []string{
+					"golang",
+					"javascript",
+				},
+			},
+		}
+		e := NewEngine()
+		e.Composites = []Composite{
+			Composite{
+				Operator: OperatorAnd,
+				Rules: []Rule{
+					Rule{
+						Comparator: "contains",
+						Path:       "user.favorites",
+						Value:      "golang",
+					},
+				},
+			},
+		}
+		res := e.Evaluate(props)
+		if res != true {
+			t.Fatal("expected engine to pass")
+		}
+	})
 }
