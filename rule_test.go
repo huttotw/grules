@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestRuleEvaluate(t *testing.T) {
+func TestRule_evaluate(t *testing.T) {
 	comparators := map[string]Comparator{
 		"eq": equal,
 	}
@@ -60,7 +60,28 @@ func TestRuleEvaluate(t *testing.T) {
 	})
 }
 
-func TestCompositeEvaluate(t *testing.T) {
+func BenchmarkRule_evaluate(b *testing.B) {
+	r := Rule{
+		Comparator: "unit",
+		Path:       "name",
+		Value:      "Trevor",
+	}
+	props := map[string]interface{}{
+		"name": "Trevor",
+	}
+	comps := map[string]Comparator{
+		"unit": func(a, b interface{}) bool {
+			return true
+		},
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		r.evaluate(props, comps)
+	}
+}
+
+func TestComposite_evaluate(t *testing.T) {
 	comparators := map[string]Comparator{
 		"eq": equal,
 	}
@@ -134,6 +155,33 @@ func TestCompositeEvaluate(t *testing.T) {
 			t.Fatal("expected composite to be true")
 		}
 	})
+}
+
+func BenchmarkComposite_evaluate(b *testing.B) {
+	c := Composite{
+		Operator: "or",
+		Rules: []Rule{
+			Rule{
+				Comparator: "unit",
+				Path:       "name",
+				Value:      "Trevor",
+			},
+		},
+	}
+
+	props := map[string]interface{}{
+		"name": "Trevor",
+	}
+	comps := map[string]Comparator{
+		"unit": func(a, b interface{}) bool {
+			return true
+		},
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		c.evaluate(props, comps)
+	}
 }
 
 func TestAddComparator(t *testing.T) {
@@ -309,4 +357,29 @@ func TestEngineEvaluate(t *testing.T) {
 			t.Fatal("expected engine to pass")
 		}
 	})
+}
+
+func BenchmarkEngine_Evaluate(b *testing.B) {
+	e := NewEngine()
+	e.Composites = []Composite{
+		Composite{
+			Operator: "or",
+			Rules: []Rule{
+				Rule{
+					Comparator: "unit",
+					Path:       "name",
+					Value:      "Trevor",
+				},
+			},
+		},
+	}
+	e.AddComparator("unit", func(a, b interface{}) bool { return true })
+	props := map[string]interface{}{
+		"name": "Trevor",
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		e.Evaluate(props)
+	}
 }

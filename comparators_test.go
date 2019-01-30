@@ -193,7 +193,6 @@ func BenchmarkContainsLong50000(b *testing.B) {
 	}
 
 	b.ResetTimer()
-
 	for i := 0; i < b.N; i++ {
 		contains(list, "49999")
 	}
@@ -233,7 +232,6 @@ func BenchmarkNotContainsLong50000(b *testing.B) {
 	}
 
 	b.ResetTimer()
-
 	for i := 0; i < b.N; i++ {
 		contains(list, "50000")
 	}
