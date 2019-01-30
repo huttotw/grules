@@ -185,7 +185,7 @@ func BenchmarkContains(b *testing.B) {
 }
 
 func BenchmarkContainsLong50000(b *testing.B) {
-	var list []string
+	var list []interface{}
 
 	// Simulate a list of postal codes
 	for i := 0; i < 50000; i++ {
@@ -193,7 +193,6 @@ func BenchmarkContainsLong50000(b *testing.B) {
 	}
 
 	b.ResetTimer()
-
 	for i := 0; i < b.N; i++ {
 		contains(list, "49999")
 	}
@@ -225,7 +224,7 @@ func BenchmarkNotContains(b *testing.B) {
 }
 
 func BenchmarkNotContainsLong50000(b *testing.B) {
-	var list []string
+	var list []interface{}
 
 	// Simulate a list of postal codes
 	for i := 0; i < 50000; i++ {
@@ -233,7 +232,6 @@ func BenchmarkNotContainsLong50000(b *testing.B) {
 	}
 
 	b.ResetTimer()
-
 	for i := 0; i < b.N; i++ {
 		contains(list, "50000")
 	}
