@@ -4,6 +4,7 @@ import (
 	"strings"
 )
 
+// pluck will pull out the value from the props given a path delimited by '.'
 func pluck(props map[string]interface{}, path string) interface{} {
 	parts := strings.Split(path, ".")
 	for i := 0; i < len(parts)-1; i++ {
