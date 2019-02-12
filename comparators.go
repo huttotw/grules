@@ -168,6 +168,24 @@ func contains(a, b interface{}) bool {
 		default:
 			return false
 		}
+	case int64:
+		switch at := a.(type) {
+		case []interface{}:
+			for _, v := range at {
+				if elem, ok := v.(int64); ok && elem == bt {
+					return true
+				}
+			}
+			return false
+		case []int64:
+			for _, v := range at {
+				if v == bt {
+					return true
+				}
+			}
+		default:
+			return false
+		}
 	default:
 		return false
 	}
@@ -209,6 +227,25 @@ func notContains(a, b interface{}) bool {
 			}
 			return true
 		case []float64:
+			for _, v := range at {
+				if v == bt {
+					return false
+				}
+			}
+			return true
+		default:
+			return false
+		}
+	case int64:
+		switch at := a.(type) {
+		case []interface{}:
+			for _, v := range at {
+				if elem, ok := v.(int64); ok && elem == bt {
+					return false
+				}
+			}
+			return true
+		case []int64:
 			for _, v := range at {
 				if v == bt {
 					return false
