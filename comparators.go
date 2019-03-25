@@ -225,10 +225,30 @@ func notContains(a, b interface{}) bool {
 
 // oneOf will return true if b contains a
 func oneOf(a, b interface{}) bool {
-	return contains(b, a)
+	m, ok := b.(map[interface{}]struct{})
+	if !ok {
+		return false
+	}
+
+	_, found := m[a]
+	if found {
+		return true
+	}
+
+	return false
 }
 
 // noneOf will return true if b does not contain a
 func noneOf(a, b interface{}) bool {
-	return notContains(b, a)
+	m, ok := b.(map[interface{}]struct{})
+	if !ok {
+		return false
+	}
+
+	_, found := m[a]
+	if !found {
+		return true
+	}
+
+	return false
 }

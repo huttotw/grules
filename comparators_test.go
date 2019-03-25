@@ -245,12 +245,12 @@ func BenchmarkOneOf(b *testing.B) {
 
 func TestOneOf(t *testing.T) {
 	cases := []testCase{
-		testCase{args: []interface{}{"a", []interface{}{"a", "b"}}, expected: true},
-		testCase{args: []interface{}{"c", []interface{}{"a", "b"}}, expected: false},
-		testCase{args: []interface{}{float64(1), []interface{}{"a", "b"}}, expected: false},
-		testCase{args: []interface{}{float64(1), []interface{}{float64(1), float64(2)}}, expected: true},
-		testCase{args: []interface{}{float64(3), []interface{}{float64(1), float64(2)}}, expected: false},
-		testCase{args: []interface{}{float64(1.01), []interface{}{float64(1.01), float64(1.02)}}, expected: true},
+		testCase{args: []interface{}{"a", map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: true},
+		testCase{args: []interface{}{"c", map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: false},
+		testCase{args: []interface{}{float64(1), map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: false},
+		testCase{args: []interface{}{float64(1), map[interface{}]struct{}{float64(1): struct{}{}, float64(2): struct{}{}}}, expected: true},
+		testCase{args: []interface{}{float64(3), map[interface{}]struct{}{float64(1): struct{}{}, float64(2): struct{}{}}}, expected: false},
+		testCase{args: []interface{}{float64(1.01), map[interface{}]struct{}{1.01: struct{}{}, 1.02: struct{}{}}}, expected: true},
 	}
 	for i, c := range cases {
 		res := oneOf(c.args[0], c.args[1])
@@ -268,13 +268,13 @@ func BenchmarkNoneOf(b *testing.B) {
 
 func TestNoneOf(t *testing.T) {
 	cases := []testCase{
-		testCase{args: []interface{}{"a", []interface{}{"a", "b"}}, expected: false},
-		testCase{args: []interface{}{"c", []interface{}{"a", "b"}}, expected: true},
-		testCase{args: []interface{}{float64(1), []interface{}{"a", "b"}}, expected: true},
-		testCase{args: []interface{}{float64(1), []interface{}{float64(1), float64(2)}}, expected: false},
-		testCase{args: []interface{}{float64(3), []interface{}{float64(1), float64(2)}}, expected: true},
-		testCase{args: []interface{}{float64(1.01), []interface{}{float64(1.01), float64(1.02)}}, expected: false},
-		testCase{args: []interface{}{float64(1.03), []interface{}{float64(1.01), float64(1.02)}}, expected: true},
+		testCase{args: []interface{}{"a", map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: false},
+		testCase{args: []interface{}{"c", map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: true},
+		testCase{args: []interface{}{float64(1), map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: true},
+		testCase{args: []interface{}{float64(1), map[interface{}]struct{}{float64(1): struct{}{}, float64(2): struct{}{}}}, expected: false},
+		testCase{args: []interface{}{float64(3), map[interface{}]struct{}{float64(1): struct{}{}, float64(2): struct{}{}}}, expected: true},
+		testCase{args: []interface{}{float64(1.01), map[interface{}]struct{}{1.01: struct{}{}, 1.02: struct{}{}}}, expected: false},
+		testCase{args: []interface{}{float64(1.03), map[interface{}]struct{}{1.01: struct{}{}, 1.02: struct{}{}}}, expected: true},
 	}
 
 	for i, c := range cases {

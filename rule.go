@@ -37,6 +37,63 @@ type Rule struct {
 	Value      interface{} `json:"value"`
 }
 
+func (r *Rule) MarshalJSON() ([]byte, error) {
+	type unmappedRule struct {
+		Comparator string      `json:"comparator"`
+		Path       string      `json:"path"`
+		Value      interface{} `json:"value"`
+	}
+
+	switch t := r.Value.(type) {
+	case map[interface{}]struct{}:
+		var s []interface{}
+		for k := range t {
+			s = append(s, k)
+		}
+		r.Value = s
+	}
+
+	umr := unmappedRule{
+		Comparator: r.Comparator,
+		Path:       r.Path,
+		Value:      r.Value,
+	}
+
+	return json.Marshal(umr)
+}
+
+func (r *Rule) UnmarshalJSON(data []byte) error {
+	type mapRule struct {
+		Comparator string      `json:"comparator"`
+		Path       string      `json:"path"`
+		Value      interface{} `json:"value"`
+	}
+
+	var mr mapRule
+	err := json.Unmarshal(data, &mr)
+	if err != nil {
+		return err
+	}
+
+	switch t := mr.Value.(type) {
+	case []interface{}:
+		var m = make(map[interface{}]struct{})
+		for _, v := range t {
+			m[v] = struct{}{}
+		}
+
+		mr.Value = m
+	}
+
+	*r = Rule{
+		Comparator: mr.Comparator,
+		Path:       mr.Path,
+		Value:      mr.Value,
+	}
+
+	return nil
+}
+
 // Composite is a group of rules that are joined by a logical operator
 // AND or OR. If the operator is AND all of the rules must be true,
 // if the operator is OR, one of the rules must be true.

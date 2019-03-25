@@ -1,6 +1,8 @@
 package grules
 
 import (
+	"encoding/json"
+	"reflect"
 	"testing"
 )
 
@@ -79,6 +81,42 @@ func BenchmarkRule_evaluate(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		r.evaluate(props, comps)
 	}
+}
+
+func TestRule_MarshalJSON(t *testing.T) {
+	t.Run("simple engine", func(t *testing.T) {
+		j := []byte(`{"composites":[{"operator":"and","rules":[{"comparator":"eq","path":"first_name","value":"Trevor"}]}]}`)
+		e, err := NewJSONEngine(j)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		b, err := json.Marshal(e)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if string(b) != string(j) {
+			t.Fatal("expected json to be same")
+		}
+	})
+
+	t.Run("list to map", func(t *testing.T) {
+		j := []byte(`{"composites":[{"operator":"and","rules":[{"comparator":"oneof","path":"first_name","value":["Trevor"]}]}]}`)
+		e, err := NewJSONEngine(j)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		b, err := json.Marshal(e)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if string(b) != string(j) {
+			t.Fatal("expected json to be same")
+		}
+	})
 }
 
 func TestComposite_evaluate(t *testing.T) {
@@ -220,17 +258,37 @@ func TestAddComparator(t *testing.T) {
 }
 
 func TestNewJSONEngine(t *testing.T) {
-	j := []byte(`{"composites":[{"operator":"and","rules":[{"comparator":"eq","path":"first_name","value":"Trevor"}]}]}`)
-	e, err := NewJSONEngine(j)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if len(e.Composites) != 1 {
-		t.Fatal("expected 1 composite")
-	}
-	if len(e.Composites[0].Rules) != 1 {
-		t.Fatal("expected 1 rule in first composite")
-	}
+	t.Run("simple engine", func(t *testing.T) {
+		j := []byte(`{"composites":[{"operator":"and","rules":[{"comparator":"eq","path":"first_name","value":"Trevor"}]}]}`)
+		e, err := NewJSONEngine(j)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(e.Composites) != 1 {
+			t.Fatal("expected 1 composite")
+		}
+		if len(e.Composites[0].Rules) != 1 {
+			t.Fatal("expected 1 rule in first composite")
+		}
+	})
+
+	t.Run("list to map", func(t *testing.T) {
+		j := []byte(`{"composites":[{"operator":"and","rules":[{"comparator":"oneof","path":"first_name","value":["Trevor"]}]}]}`)
+		e, err := NewJSONEngine(j)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(e.Composites) != 1 {
+			t.Fatal("expected 1 composite")
+		}
+		if len(e.Composites[0].Rules) != 1 {
+			t.Fatal("expected 1 rule in first composite")
+		}
+
+		if reflect.TypeOf(e.Composites[0].Rules[0].Value).Kind() != reflect.Map {
+			t.Fatal("expected list to be transformed to map")
+		}
+	})
 }
 
 func TestEngineEvaluate(t *testing.T) {
