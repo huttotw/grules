@@ -14,7 +14,7 @@ func TestRule_evaluate(t *testing.T) {
 		"first_name": "Trevor",
 	}
 	t.Run("basic rule", func(t *testing.T) {
-		r := Rule{
+		r := rule{
 			Comparator: "eq",
 			Path:       "first_name",
 			Value:      "Trevor",
@@ -26,7 +26,7 @@ func TestRule_evaluate(t *testing.T) {
 	})
 
 	t.Run("unknown path", func(t *testing.T) {
-		r := Rule{
+		r := rule{
 			Comparator: "eq",
 			Path:       "email",
 			Value:      "Trevor",
@@ -38,7 +38,7 @@ func TestRule_evaluate(t *testing.T) {
 	})
 
 	t.Run("non comparable types", func(t *testing.T) {
-		r := Rule{
+		r := rule{
 			Comparator: "eq",
 			Path:       "name",
 			Value:      func() {},
@@ -50,7 +50,7 @@ func TestRule_evaluate(t *testing.T) {
 	})
 
 	t.Run("unknown comparator", func(t *testing.T) {
-		r := Rule{
+		r := rule{
 			Comparator: "unknown",
 			Path:       "name",
 			Value:      "Trevor",
@@ -63,7 +63,7 @@ func TestRule_evaluate(t *testing.T) {
 }
 
 func BenchmarkRule_evaluate(b *testing.B) {
-	r := Rule{
+	r := rule{
 		Comparator: "unit",
 		Path:       "name",
 		Value:      "Trevor",
@@ -129,15 +129,15 @@ func TestComposite_evaluate(t *testing.T) {
 	}
 
 	t.Run("and", func(t *testing.T) {
-		c := Composite{
+		c := composite{
 			Operator: OperatorAnd,
-			Rules: []Rule{
-				Rule{
+			Rules: []rule{
+				rule{
 					Comparator: "eq",
 					Path:       "name",
 					Value:      "Trevor",
 				},
-				Rule{
+				rule{
 					Comparator: "eq",
 					Path:       "age",
 					Value:      float64(23),
@@ -151,15 +151,15 @@ func TestComposite_evaluate(t *testing.T) {
 	})
 
 	t.Run("or", func(t *testing.T) {
-		c := Composite{
+		c := composite{
 			Operator: OperatorOr,
-			Rules: []Rule{
-				Rule{
+			Rules: []rule{
+				rule{
 					Comparator: "eq",
 					Path:       "name",
 					Value:      "John",
 				},
-				Rule{
+				rule{
 					Comparator: "eq",
 					Path:       "age",
 					Value:      float64(23),
@@ -173,15 +173,15 @@ func TestComposite_evaluate(t *testing.T) {
 	})
 
 	t.Run("unknown operator", func(t *testing.T) {
-		c := Composite{
+		c := composite{
 			Operator: "unknown",
-			Rules: []Rule{
-				Rule{
+			Rules: []rule{
+				rule{
 					Comparator: "eq",
 					Path:       "name",
 					Value:      "John",
 				},
-				Rule{
+				rule{
 					Comparator: "eq",
 					Path:       "age",
 					Value:      float64(23),
@@ -196,10 +196,10 @@ func TestComposite_evaluate(t *testing.T) {
 }
 
 func BenchmarkComposite_evaluate(b *testing.B) {
-	c := Composite{
+	c := composite{
 		Operator: "or",
-		Rules: []Rule{
-			Rule{
+		Rules: []rule{
+			rule{
 				Comparator: "unit",
 				Path:       "name",
 				Value:      "Trevor",
@@ -226,17 +226,20 @@ func TestAddComparator(t *testing.T) {
 	comp := func(a, b interface{}) bool {
 		return false
 	}
-	e := NewEngine()
+	e, err := NewJSONEngine(json.RawMessage(`{}`))
+	if err != nil {
+		t.Fatal(err)
+	}
 	e = e.AddComparator("always-false", comp)
 	if e.comparators["always-false"] == nil {
 		t.Fatal("expected comparator to be added under key always-false")
 	}
 
-	e.Composites = []Composite{
-		Composite{
+	e.Composites = []composite{
+		composite{
 			Operator: OperatorAnd,
-			Rules: []Rule{
-				Rule{
+			Rules: []rule{
+				rule{
 					Comparator: "always-false",
 					Path:       "user.name",
 					Value:      "Trevor",
@@ -300,7 +303,10 @@ func TestEngineEvaluate(t *testing.T) {
 				"id":    float64(1234),
 			},
 		}
-		e := NewEngine()
+		e, err := NewJSONEngine(json.RawMessage(`{}`))
+		if err != nil {
+			t.Fatal(err)
+		}
 		res := e.Evaluate(props)
 		if res != true {
 			t.Fatal("expected engine to pass")
@@ -319,18 +325,9 @@ func TestEngineEvaluate(t *testing.T) {
 				},
 			},
 		}
-		e := NewEngine()
-		e.Composites = []Composite{
-			Composite{
-				Operator: OperatorAnd,
-				Rules: []Rule{
-					Rule{
-						Comparator: "contains",
-						Path:       "address.bedroom.furniture",
-						Value:      "tv",
-					},
-				},
-			},
+		e, err := NewJSONEngine(json.RawMessage(`{"composites":[{"operator":"and","rules":[{"comparator":"contains","path":"address.bedroom.furniture","value":"tv"}]}]}`))
+		if err != nil {
+			t.Fatal(err)
 		}
 		res := e.Evaluate(props)
 		if res != true {
@@ -346,38 +343,9 @@ func TestEngineEvaluate(t *testing.T) {
 				"id":    float64(1234),
 			},
 		}
-		e := NewEngine()
-		e.Composites = []Composite{
-			Composite{
-				Operator: OperatorAnd,
-				Rules: []Rule{
-					Rule{
-						Comparator: "eq",
-						Path:       "user.name",
-						Value:      "Trevor",
-					},
-					Rule{
-						Comparator: "eq",
-						Path:       "user.id",
-						Value:      float64(1234),
-					},
-				},
-			},
-			Composite{
-				Operator: OperatorOr,
-				Rules: []Rule{
-					Rule{
-						Comparator: "eq",
-						Path:       "user.name",
-						Value:      "Trevor",
-					},
-					Rule{
-						Comparator: "eq",
-						Path:       "user.id",
-						Value:      float64(7),
-					},
-				},
-			},
+		e, err := NewJSONEngine(json.RawMessage(`{"composites":[{"operator":"and","rules":[{"comparator":"eq","path":"user.name","value":"Trevor"},{"comparator":"eq","path":"user.id","value":1234}]},{"operator":"or","rules":[{"comparator":"eq","path":"user.name","value":"Trevor"},{"comparator":"eq","path":"user.id","value":7}]}]}`))
+		if err != nil {
+			t.Fatal(err)
 		}
 		res := e.Evaluate(props)
 		if res != true {
@@ -397,18 +365,9 @@ func TestEngineEvaluate(t *testing.T) {
 				},
 			},
 		}
-		e := NewEngine()
-		e.Composites = []Composite{
-			Composite{
-				Operator: OperatorAnd,
-				Rules: []Rule{
-					Rule{
-						Comparator: "contains",
-						Path:       "user.favorites",
-						Value:      "golang",
-					},
-				},
-			},
+		e, err := NewJSONEngine(json.RawMessage(`{"composites":[{"operator":"and","rules":[{"comparator":"contains","path":"user.favorites","value":"golang"}]}]}`))
+		if err != nil {
+			t.Fatal(err)
 		}
 		res := e.Evaluate(props)
 		if res != true {
@@ -418,18 +377,9 @@ func TestEngineEvaluate(t *testing.T) {
 }
 
 func BenchmarkEngine_Evaluate(b *testing.B) {
-	e := NewEngine()
-	e.Composites = []Composite{
-		Composite{
-			Operator: "or",
-			Rules: []Rule{
-				Rule{
-					Comparator: "unit",
-					Path:       "name",
-					Value:      "Trevor",
-				},
-			},
-		},
+	e, err := NewJSONEngine(json.RawMessage(`{"composites":[{"operator":"and","rules":[{"comparator":"unit","path":"name","value":"Trevor"}]}]}`))
+	if err != nil {
+		b.Fatal(err)
 	}
 	e.AddComparator("unit", func(a, b interface{}) bool { return true })
 	props := map[string]interface{}{

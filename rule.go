@@ -31,13 +31,15 @@ var defaultComparators = map[string]Comparator{
 // performed, the path is the path into a map, delimited by '.', and
 // the value is the value that we expect to match the value at the
 // path
-type Rule struct {
+type rule struct {
 	Comparator string      `json:"comparator"`
 	Path       string      `json:"path"`
 	Value      interface{} `json:"value"`
 }
 
-func (r *Rule) MarshalJSON() ([]byte, error) {
+// MarshalJSON is important because it will put maps back into arrays, we used maps
+// to speed up one of
+func (r *rule) MarshalJSON() ([]byte, error) {
 	type unmappedRule struct {
 		Comparator string      `json:"comparator"`
 		Path       string      `json:"path"`
@@ -62,7 +64,9 @@ func (r *Rule) MarshalJSON() ([]byte, error) {
 	return json.Marshal(umr)
 }
 
-func (r *Rule) UnmarshalJSON(data []byte) error {
+// UnmarshalJSON is important because it will convert arrays in a rule set to a map
+// to provide faster lookups
+func (r *rule) UnmarshalJSON(data []byte) error {
 	type mapRule struct {
 		Comparator string      `json:"comparator"`
 		Path       string      `json:"path"`
@@ -85,7 +89,7 @@ func (r *Rule) UnmarshalJSON(data []byte) error {
 		mr.Value = m
 	}
 
-	*r = Rule{
+	*r = rule{
 		Comparator: mr.Comparator,
 		Path:       mr.Path,
 		Value:      mr.Value,
@@ -97,24 +101,16 @@ func (r *Rule) UnmarshalJSON(data []byte) error {
 // Composite is a group of rules that are joined by a logical operator
 // AND or OR. If the operator is AND all of the rules must be true,
 // if the operator is OR, one of the rules must be true.
-type Composite struct {
+type composite struct {
 	Operator string `json:"operator"`
-	Rules    []Rule `json:"rules"`
+	Rules    []rule `json:"rules"`
 }
 
 // Engine is a group of composites. All of the composites must be
 // true for the engine's evaluate function to return true.
 type Engine struct {
-	Composites  []Composite `json:"composites"`
+	Composites  []composite `json:"composites"`
 	comparators map[string]Comparator
-}
-
-// NewEngine will create a new engine with the default comparators
-func NewEngine() Engine {
-	e := Engine{
-		comparators: defaultComparators,
-	}
-	return e
 }
 
 // NewJSONEngine will create a new engine from it's JSON representation
@@ -149,7 +145,7 @@ func (e Engine) Evaluate(props map[string]interface{}) bool {
 // Evaluate will ensure all either all of the rules are true, if given
 // the AND operator, or that one of the rules is true if given the OR
 // operator.
-func (c Composite) evaluate(props map[string]interface{}, comps map[string]Comparator) bool {
+func (c composite) evaluate(props map[string]interface{}, comps map[string]Comparator) bool {
 	switch c.Operator {
 	case OperatorAnd:
 		for _, r := range c.Rules {
@@ -173,7 +169,7 @@ func (c Composite) evaluate(props map[string]interface{}, comps map[string]Compa
 }
 
 // Evaluate will return true if the rule is true, false otherwise
-func (r Rule) evaluate(props map[string]interface{}, comps map[string]Comparator) bool {
+func (r rule) evaluate(props map[string]interface{}, comps map[string]Comparator) bool {
 	// Make sure we can get a value from the props
 	val := pluck(props, r.Path)
 	if val == nil {

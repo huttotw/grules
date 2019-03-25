@@ -12,31 +12,15 @@ This version includes a couple more features including, AND and OR composites an
 
 ```go
 // Create a new instance of an engine with some default comparators
-e := NewEngine()
+e, err := NewJSONEngine(json.RawMessage(`{"composites":[{"operator":"or","rules":[{"comparator":"always-false","path":"user.name","value":"Trevor"},{"comparator":"eq","path":"user.name","value":"Trevor"}]}]}`))
+if err != nil {
+    panic(err)
+}
 
 // Add a new, custom comparator
 e = e.AddComparator("always-false", func(a, b interface{}) bool {
     return false
 })
-
-// Create composites, with rules for the engine to evaluate
-e.Composites = []Composite{
-    Composite{
-        Operator: OperatorOr,
-        Rules: []Rule{
-            Rule{
-                Comparator: "always-false",
-                Path: "user.name",
-                Value: "Trevor",
-            },
-            Rule{
-                Comparator: "eq",
-                Path: "user.name",
-                Value: "Trevor",
-            },
-        },
-    },
-}
 
 // Give some properties, this map can be deeper and supports interfaces
 props := map[string]interface{}{
