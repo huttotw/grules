@@ -185,7 +185,7 @@ func BenchmarkContains(b *testing.B) {
 }
 
 func BenchmarkContainsLong50000(b *testing.B) {
-	var list []string
+	var list []interface{}
 
 	// Simulate a list of postal codes
 	for i := 0; i < 50000; i++ {
@@ -193,7 +193,6 @@ func BenchmarkContainsLong50000(b *testing.B) {
 	}
 
 	b.ResetTimer()
-
 	for i := 0; i < b.N; i++ {
 		contains(list, "49999")
 	}
@@ -201,6 +200,7 @@ func BenchmarkContainsLong50000(b *testing.B) {
 
 func TestNotContains(t *testing.T) {
 	cases := []testCase{
+		testCase{args: []interface{}{[]interface{}{}, "a"}, expected: true},
 		testCase{args: []interface{}{[]interface{}{"a", "b"}, "a"}, expected: false},
 		testCase{args: []interface{}{[]interface{}{"a", "b"}, "c"}, expected: true},
 		testCase{args: []interface{}{[]interface{}{"a", "b"}, float64(1)}, expected: true},
@@ -224,7 +224,7 @@ func BenchmarkNotContains(b *testing.B) {
 }
 
 func BenchmarkNotContainsLong50000(b *testing.B) {
-	var list []string
+	var list []interface{}
 
 	// Simulate a list of postal codes
 	for i := 0; i < 50000; i++ {
@@ -232,23 +232,53 @@ func BenchmarkNotContainsLong50000(b *testing.B) {
 	}
 
 	b.ResetTimer()
-
 	for i := 0; i < b.N; i++ {
 		contains(list, "50000")
 	}
 }
 
+func BenchmarkOneOf(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		oneOf("2", []string{"1", "2"})
+	}
+}
+
 func TestOneOf(t *testing.T) {
 	cases := []testCase{
-		testCase{args: []interface{}{"a", []interface{}{"a", "b"}}, expected: true},
-		testCase{args: []interface{}{"c", []interface{}{"a", "b"}}, expected: false},
-		testCase{args: []interface{}{float64(1), []interface{}{"a", "b"}}, expected: false},
-		testCase{args: []interface{}{float64(1), []interface{}{float64(1), float64(2)}}, expected: true},
-		testCase{args: []interface{}{float64(3), []interface{}{float64(1), float64(2)}}, expected: false},
-		testCase{args: []interface{}{float64(1.01), []interface{}{float64(1.01), float64(1.02)}}, expected: true},
+		testCase{args: []interface{}{"a", map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: true},
+		testCase{args: []interface{}{"c", map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: false},
+		testCase{args: []interface{}{float64(1), map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: false},
+		testCase{args: []interface{}{float64(1), map[interface{}]struct{}{float64(1): struct{}{}, float64(2): struct{}{}}}, expected: true},
+		testCase{args: []interface{}{float64(3), map[interface{}]struct{}{float64(1): struct{}{}, float64(2): struct{}{}}}, expected: false},
+		testCase{args: []interface{}{float64(1.01), map[interface{}]struct{}{1.01: struct{}{}, 1.02: struct{}{}}}, expected: true},
 	}
 	for i, c := range cases {
 		res := oneOf(c.args[0], c.args[1])
+		if res != c.expected {
+			t.Fatalf("expected case %d to be %v, got %v", i, c.expected, res)
+		}
+	}
+}
+
+func BenchmarkNoneOf(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		noneOf("2", []string{"1", "2"})
+	}
+}
+
+func TestNoneOf(t *testing.T) {
+	cases := []testCase{
+		testCase{args: []interface{}{"a", map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: false},
+		testCase{args: []interface{}{"c", map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: true},
+		testCase{args: []interface{}{float64(1), map[interface{}]struct{}{"a": struct{}{}, "b": struct{}{}}}, expected: true},
+		testCase{args: []interface{}{float64(1), map[interface{}]struct{}{float64(1): struct{}{}, float64(2): struct{}{}}}, expected: false},
+		testCase{args: []interface{}{float64(3), map[interface{}]struct{}{float64(1): struct{}{}, float64(2): struct{}{}}}, expected: true},
+		testCase{args: []interface{}{float64(1.01), map[interface{}]struct{}{1.01: struct{}{}, 1.02: struct{}{}}}, expected: false},
+		testCase{args: []interface{}{float64(1.03), map[interface{}]struct{}{1.01: struct{}{}, 1.02: struct{}{}}}, expected: true},
+	}
+
+	for i, c := range cases {
+		res := noneOf(c.args[0], c.args[1])
 		if res != c.expected {
 			t.Fatalf("expected case %d to be %v, got %v", i, c.expected, res)
 		}
