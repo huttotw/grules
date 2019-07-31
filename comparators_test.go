@@ -160,6 +160,35 @@ func BenchmarkGreaterThanEqual(b *testing.B) {
 	}
 }
 
+func TestRegex(t *testing.T) {
+	cases := []testCase{
+		testCase{args: []interface{}{"a", "a"}, expected: true},
+		testCase{args: []interface{}{"a", "[ab]"}, expected: true},
+		testCase{args: []interface{}{"c", "[ab]"}, expected: false},
+		testCase{args: []interface{}{"abc", "c$"}, expected: true},
+		testCase{args: []interface{}{float64(1), float64(1)}, expected: false},
+	}
+
+	for i, c := range cases {
+		res := regex(c.args[0], c.args[1])
+		if res != c.expected {
+			t.Fatalf("expected case %d to be %v, got %v", i, c.expected, res)
+		}
+	}
+}
+
+func BenchmarkRegex(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		regex("a", "a")
+	}
+}
+
+func BenchmarkRegexPhone(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		regex("+1(555) 555-5555", "\\+\\d\\(\\d+\\) \\d+-\\d+")
+	}
+}
+
 func TestContains(t *testing.T) {
 	cases := []testCase{
 		testCase{args: []interface{}{[]interface{}{"a", "b"}, "a"}, expected: true},

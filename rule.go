@@ -24,6 +24,7 @@ var defaultComparators = map[string]Comparator{
 	"ncontains": notContains,
 	"oneof":     oneOf,
 	"noneof":    noneOf,
+	"regex":     regex,
 }
 
 // Rule is a our smallest unit of measure, each rule will be

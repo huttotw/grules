@@ -1,5 +1,7 @@
 package grules
 
+import "regexp"
+
 // Comparator is a function that should evaluate two values and return
 // the true if the comparison is true, or false if the comparison is
 // false
@@ -121,6 +123,29 @@ func greaterThanEqual(a, b interface{}) bool {
 			return false
 		}
 		return at >= bt
+	default:
+		return false
+	}
+}
+
+func regex(a, b interface{}) bool {
+	switch a.(type) {
+	case string:
+		at, ok := a.(string)
+		if !ok {
+			return false
+		}
+		bt, ok := b.(string)
+		if !ok {
+			return false
+		}
+
+		r, err := regexp.Compile(bt)
+		if err != nil {
+			return false
+		}
+
+		return r.MatchString(at)
 	default:
 		return false
 	}
