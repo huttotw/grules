@@ -44,6 +44,7 @@ res := e.Evaluate(props)
 - `gte` will return true if `a >= b`
 - `contains` will return true if `a` contains `b`
 - `oneof` will return true if `a` is one of `b`
+- `regex` will return true if `a` matches `b`
 
 `contains` is different than `oneof` in that `contains` expects the first argument to be a slice, and `oneof` expects the second argument to be a slice.
 
