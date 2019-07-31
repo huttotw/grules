@@ -49,25 +49,27 @@ res := e.Evaluate(props)
 
 # Benchmarks
 
-| Benchmark                        | N          | Speed        | Used     | Allocs      |
-| -------------------------------- | ---------- | ------------ | -------- | ----------- |
-| BenchmarkEqual-12                | 1000000000 | 5.22 ns/op   | 0 B/op   | 0 allocs/op |
-| BenchmarkNotEqual-12             | 2000000000 | 3.77 ns/op   | 0 B/op   | 0 allocs/op |
-| BenchmarkLessThan-12             | 2000000000 | 2.20 ns/op   | 0 B/op   | 0 allocs/op |
-| BenchmarkLessThanEqual-12        | 2000000000 | 1.95 ns/op   | 0 B/op   | 0 allocs/op |
-| BenchmarkGreaterThan-12          | 5000000000 | 1.95 ns/op   | 0 B/op   | 0 allocs/op |
-| BenchmarkGreaterThanEqual-12     | 2000000000 | 1.97 ns/op   | 0 B/op   | 0 allocs/op |
-| BenchmarkContains-12             | 1000000000 | 5.66 ns/op   | 0 B/op   | 0 allocs/op |
-| BenchmarkContainsLong50000-12    | 30000      | 157679 ns/op | 0 B/op   | 0 allocs/op |
-| BenchmarkNotContains-12          | 500000000  | 11.5 ns/op   | 0 B/op   | 0 allocs/op |
-| BenchmarkNotContainsLong50000-12 | 30000      | 157437 ns/op | 0 B/op   | 0 allocs/op |
-| BenchmarkOneOf-12                | 500000000  | 0.53 ns/op   | 0 B/op   | 0 allocs/op |
-| BenchmarkNoneOf-12               | 500000000  | 0.53 ns/op   | 0 B/op   | 0 allocs/op |
-| BenchmarkPluckShallow-12         | 100000000  | 42.4 ns/op   | 16 B/op  | 1 allocs/op |
-| BenchmarkPluckDeep-12            | 30000000   | 174 ns/op    | 112 B/op | 1 allocs/op |
-| BenchmarkRule_evaluate-12        | 100000000  | 51.7 ns/op   | 16 B/op  | 1 allocs/op |
-| BenchmarkComposite_evaluate-12   | 100000000  | 58.9 ns/op   | 16 B/op  | 1 allocs/op |
-| BenchmarkEngine_Evaluate-12      | 100000000  | 69.9 ns/op   | 16 B/op  | 1 allocs/op |
+| Benchmark                        | N          | Speed        | Used      | Allocs       |
+| -------------------------------- | ---------- | ------------ | --------- | ------------ |
+| BenchmarkEqual-12                | 1000000000 | 5.22 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkNotEqual-12             | 2000000000 | 3.77 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkLessThan-12             | 2000000000 | 2.20 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkLessThanEqual-12        | 2000000000 | 1.95 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkGreaterThan-12          | 5000000000 | 1.95 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkGreaterThanEqual-12     | 2000000000 | 1.97 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkRegex-12                | 10000000   | 712 ns/op    | 740 B/op  | 11 allocs/op |
+| BenchmarkRegexPhone-12           | 1000000    | 3025 ns/op   | 3192 B/op | 30 allocs/op |
+| BenchmarkContains-12             | 1000000000 | 5.66 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkContainsLong50000-12    | 30000      | 157679 ns/op | 0 B/op    | 0 allocs/op  |
+| BenchmarkNotContains-12          | 500000000  | 11.5 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkNotContainsLong50000-12 | 30000      | 157437 ns/op | 0 B/op    | 0 allocs/op  |
+| BenchmarkOneOf-12                | 500000000  | 0.53 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkNoneOf-12               | 500000000  | 0.53 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkPluckShallow-12         | 100000000  | 42.4 ns/op   | 16 B/op   | 1 allocs/op  |
+| BenchmarkPluckDeep-12            | 30000000   | 174 ns/op    | 112 B/op  | 1 allocs/op  |
+| BenchmarkRule_evaluate-12        | 100000000  | 51.7 ns/op   | 16 B/op   | 1 allocs/op  |
+| BenchmarkComposite_evaluate-12   | 100000000  | 58.9 ns/op   | 16 B/op   | 1 allocs/op  |
+| BenchmarkEngine_Evaluate-12      | 100000000  | 69.9 ns/op   | 16 B/op   | 1 allocs/op  |
 
 To run benchmarks:
 
