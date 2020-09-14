@@ -197,6 +197,8 @@ func TestContains(t *testing.T) {
 		testCase{args: []interface{}{[]interface{}{float64(1), float64(2)}, float64(1)}, expected: true},
 		testCase{args: []interface{}{[]interface{}{float64(1), float64(2)}, float64(3)}, expected: false},
 		testCase{args: []interface{}{[]interface{}{float64(1.01), float64(1.02)}, float64(1.01)}, expected: true},
+		testCase{args: []interface{}{"abc", "bc"}, expected: true},
+		testCase{args: []interface{}{"abc", "de"}, expected: false},
 	}
 
 	for i, c := range cases {
@@ -210,6 +212,12 @@ func TestContains(t *testing.T) {
 func BenchmarkContains(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		contains([]string{"1", "2"}, "1")
+	}
+}
+
+func BenchmarkStringContains(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		contains("1", "1")
 	}
 }
 
@@ -236,6 +244,8 @@ func TestNotContains(t *testing.T) {
 		testCase{args: []interface{}{[]interface{}{float64(1), float64(2)}, float64(1)}, expected: false},
 		testCase{args: []interface{}{[]interface{}{float64(1), float64(2)}, float64(3)}, expected: true},
 		testCase{args: []interface{}{[]interface{}{float64(1.01), float64(1.02)}, float64(1.01)}, expected: false},
+		testCase{args: []interface{}{"abc", "bc"}, expected: false},
+		testCase{args: []interface{}{"abc", "de"}, expected: true},
 	}
 
 	for i, c := range cases {
@@ -249,6 +259,12 @@ func TestNotContains(t *testing.T) {
 func BenchmarkNotContains(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		contains([]string{"1", "2"}, "3")
+	}
+}
+
+func BenchmarkStringNotContains(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		contains("1", "3")
 	}
 }
 
