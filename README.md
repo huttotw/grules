@@ -43,15 +43,19 @@ res := e.Evaluate(props)
 - `gt` will return true if `a > b`
 - `gte` will return true if `a >= b`
 - `contains` will return true if `a` contains `b`
+- `ncontains` will return true if `a` does not contain `b`
 - `oneof` will return true if `a` is one of `b`
+- `noneof` will return true if `a` is not one of `b`
 - `regex` will return true if `a` matches `b`
 
-`contains` is different than `oneof` in that `contains` expects the first argument to be a slice, and `oneof` expects the second argument to be a slice.
+`contains` and `ncontains` work for substring comparisons as well as item-in-collection comparisons.
+
+When used for item-in-collection comparisons, `contains` expects the first argument to be a slice. `contains` is different than `oneof` in that `oneof` expects the second argument to be a slice.
 
 # Benchmarks
 
 | Benchmark                        | N          | Speed        | Used      | Allocs       |
-| -------------------------------- | ---------- | ------------ | --------- | ------------ |
+|----------------------------------|------------|--------------|-----------|--------------|
 | BenchmarkEqual-12                | 1000000000 | 5.22 ns/op   | 0 B/op    | 0 allocs/op  |
 | BenchmarkNotEqual-12             | 2000000000 | 3.77 ns/op   | 0 B/op    | 0 allocs/op  |
 | BenchmarkLessThan-12             | 2000000000 | 2.20 ns/op   | 0 B/op    | 0 allocs/op  |

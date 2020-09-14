@@ -1,6 +1,9 @@
 package grules
 
-import "regexp"
+import (
+	"regexp"
+	"strings"
+)
 
 // Comparator is a function that should evaluate two values and return
 // the true if the comparison is true, or false if the comparison is
@@ -172,6 +175,8 @@ func contains(a, b interface{}) bool {
 				}
 			}
 			return false
+		case string:
+			return strings.Contains(a.(string), b.(string))
 		default:
 			return false
 		}
@@ -221,6 +226,8 @@ func notContains(a, b interface{}) bool {
 				}
 			}
 			return true
+		case string:
+			return !strings.Contains(a.(string), b.(string))
 		default:
 			return false
 		}
