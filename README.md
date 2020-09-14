@@ -56,25 +56,27 @@ When used for item-in-collection comparisons, `contains` expects the first argum
 
 | Benchmark                        | N          | Speed        | Used      | Allocs       |
 |----------------------------------|------------|--------------|-----------|--------------|
-| BenchmarkEqual-12                | 1000000000 | 5.22 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkNotEqual-12             | 2000000000 | 3.77 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkLessThan-12             | 2000000000 | 2.20 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkLessThanEqual-12        | 2000000000 | 1.95 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkGreaterThan-12          | 5000000000 | 1.95 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkGreaterThanEqual-12     | 2000000000 | 1.97 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkRegex-12                | 10000000   | 712 ns/op    | 740 B/op  | 11 allocs/op |
-| BenchmarkRegexPhone-12           | 1000000    | 3025 ns/op   | 3192 B/op | 30 allocs/op |
-| BenchmarkContains-12             | 1000000000 | 5.66 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkContainsLong50000-12    | 30000      | 157679 ns/op | 0 B/op    | 0 allocs/op  |
-| BenchmarkNotContains-12          | 500000000  | 11.5 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkNotContainsLong50000-12 | 30000      | 157437 ns/op | 0 B/op    | 0 allocs/op  |
-| BenchmarkOneOf-12                | 500000000  | 0.53 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkNoneOf-12               | 500000000  | 0.53 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkPluckShallow-12         | 100000000  | 42.4 ns/op   | 16 B/op   | 1 allocs/op  |
-| BenchmarkPluckDeep-12            | 30000000   | 174 ns/op    | 112 B/op  | 1 allocs/op  |
-| BenchmarkRule_evaluate-12        | 100000000  | 51.7 ns/op   | 16 B/op   | 1 allocs/op  |
-| BenchmarkComposite_evaluate-12   | 100000000  | 58.9 ns/op   | 16 B/op   | 1 allocs/op  |
-| BenchmarkEngine_Evaluate-12      | 100000000  | 69.9 ns/op   | 16 B/op   | 1 allocs/op  |
+| BenchmarkEqual-12                | 650602549  | 5.52 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkNotEqual-12             | 876894124  | 4.09 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkLessThan-12             | 1000000000 | 2.84 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkLessThanEqual-12        | 1000000000 | 2.57 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkGreaterThan-12          | 1000000000 | 2.07 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkGreaterThanEqual-12     | 1000000000 | 2.86 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkRegex-12                | 4524237    | 793 ns/op    | 753 B/op  | 11 allocs/op |
+| BenchmarkRegexPhone-12           | 1000000    | 3338 ns/op   | 3199 B/op | 30 allocs/op |
+| BenchmarkContains-12             | 499627219  | 7.16 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkStringContains-12       | 405497102  | 8.87 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkContainsLong50000-12    | 18992      | 184016 ns/op | 0 B/op    | 0 allocs/op  |
+| BenchmarkNotContains-12          | 292932907  | 12.3 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkStringNotContains-12    | 392618857  | 9.14 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkNotContainsLong50000-12 | 19243      | 191787 ns/op | 0 B/op    | 0 allocs/op  |
+| BenchmarkOneOf-12                | 1000000000 | 1.80 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkNoneOf-12               | 1000000000 | 1.79 ns/op   | 0 B/op    | 0 allocs/op  |
+| BenchmarkPluckShallow-12         | 85997188   | 41.6 ns/op   | 16 B/op   | 1 allocs/op  |
+| BenchmarkPluckDeep-12            | 18789103   | 194 ns/op    | 112 B/op  | 1 allocs/op  |
+| BenchmarkRule_evaluate-12        | 69558996   | 51.1 ns/op   | 16 B/op   | 1 allocs/op  |
+| BenchmarkComposite_evaluate-12   | 59484760   | 55.7 ns/op   | 16 B/op   | 1 allocs/op  |
+| BenchmarkEngine_Evaluate-12      | 47892318   | 75.0 ns/op   | 16 B/op   | 1 allocs/op  |
 
 To run benchmarks:
 

@@ -215,6 +215,12 @@ func BenchmarkContains(b *testing.B) {
 	}
 }
 
+func BenchmarkStringContains(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		contains("1", "1")
+	}
+}
+
 func BenchmarkContainsLong50000(b *testing.B) {
 	var list []interface{}
 
@@ -253,6 +259,12 @@ func TestNotContains(t *testing.T) {
 func BenchmarkNotContains(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		contains([]string{"1", "2"}, "3")
+	}
+}
+
+func BenchmarkStringNotContains(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		contains("1", "3")
 	}
 }
 
