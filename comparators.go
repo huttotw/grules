@@ -154,9 +154,8 @@ func regex(a, b interface{}) bool {
 	}
 }
 
-// contains will return true if a contains b. We assume
-// that the first interface is a slice. If you need b to be a slice
-// consider using oneOf
+// contains will return true if a contains b. a can be a slice
+// or a string.  If you need b to be a slice consider using oneOf
 func contains(a, b interface{}) bool {
 	switch bt := b.(type) {
 	case string:
@@ -207,7 +206,7 @@ func contains(a, b interface{}) bool {
 
 // notContains will return true if the b is not contained a. This will also return
 // true if a is a slice of different types than b. It will return false if a
-// is not a slice.
+// is not a slice or a string.
 func notContains(a, b interface{}) bool {
 	switch bt := b.(type) {
 	case string:
@@ -255,7 +254,7 @@ func notContains(a, b interface{}) bool {
 	}
 }
 
-// oneOf will return true if b contains a
+// oneOf will return true if b (slice) contains a
 func oneOf(a, b interface{}) bool {
 	m, ok := b.(map[interface{}]struct{})
 	if !ok {
@@ -270,7 +269,7 @@ func oneOf(a, b interface{}) bool {
 	return false
 }
 
-// noneOf will return true if b does not contain a
+// noneOf will return true if b (slice) does not contain a
 func noneOf(a, b interface{}) bool {
 	m, ok := b.(map[interface{}]struct{})
 	if !ok {
