@@ -1,5 +1,3 @@
-[![CircleCI](https://circleci.com/gh/huttotw/grules/tree/master.svg?style=svg)](https://circleci.com/gh/huttotw/grules/tree/master)
-
 # Introduction
 
 This package was created with inspiration from Thomas' [go-ruler](https://github.com/hopkinsth/go-ruler) to run a simple set of rules against an entity.
@@ -55,7 +53,7 @@ When used for item-in-collection comparisons, `contains` expects the first argum
 # Benchmarks
 
 | Benchmark                        | N          | Speed        | Used      | Allocs       |
-|----------------------------------|------------|--------------|-----------|--------------|
+| -------------------------------- | ---------- | ------------ | --------- | ------------ |
 | BenchmarkEqual-12                | 650602549  | 5.52 ns/op   | 0 B/op    | 0 allocs/op  |
 | BenchmarkNotEqual-12             | 876894124  | 4.09 ns/op   | 0 B/op    | 0 allocs/op  |
 | BenchmarkLessThan-12             | 1000000000 | 2.84 ns/op   | 0 B/op    | 0 allocs/op  |
