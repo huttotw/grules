@@ -1,4 +1,4 @@
-<img src="https://socialify.git.ci/huttotw/grules/image?description=1&font=Raleway&language=1&owner=1&pattern=Overlapping%20Hexagons&stargazers=1&theme=Dark" alt="grules" width="640" height="320" />
+<img src="https://socialify.git.ci/huttotw/grules/image?description=1&font=Raleway&language=1&owner=1&pattern=Overlapping%20Hexagons&stargazers=1&theme=Dark" alt="grules" />
 
 # Introduction
 
