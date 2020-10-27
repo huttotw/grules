@@ -122,6 +122,8 @@ func TestRule_MarshalJSON(t *testing.T) {
 func TestComposite_evaluate(t *testing.T) {
 	comparators := map[string]Comparator{
 		"eq": equal,
+		"gt": greaterThan,
+		"lt": lessThan,
 	}
 	props := map[string]interface{}{
 		"name": "Trevor",
@@ -163,6 +165,74 @@ func TestComposite_evaluate(t *testing.T) {
 					Comparator: "eq",
 					Path:       "age",
 					Value:      float64(23),
+				},
+			},
+		}
+		res := c.evaluate(props, comparators)
+		if res != true {
+			t.Fatal("expected composite to be true")
+		}
+	})
+
+	t.Run("nested and - or", func(t *testing.T) {
+		c := Composite{
+			Operator: OperatorAnd,
+			Rules: []Rule{
+				Rule{
+					Comparator: "eq",
+					Path:       "name",
+					Value:      "Trevor",
+				},
+			},
+			Composites: []Composite{
+				Composite{
+					Operator: OperatorOr,
+					Rules: []Rule{
+						Rule{
+							Comparator: "gt",
+							Path:       "age",
+							Value:      float64(20),
+						},
+						Rule{
+							Comparator: "lt",
+							Path:       "age",
+							Value:      float64(20),
+						},
+					},
+				},
+			},
+		}
+		res := c.evaluate(props, comparators)
+		if res != true {
+			t.Fatal("expected composite to be true")
+		}
+	})
+
+	t.Run("nested or - and", func(t *testing.T) {
+		c := Composite{
+			Operator: OperatorOr,
+			Rules: []Rule{
+				Rule{
+					Comparator: "eq",
+					Path:       "name",
+					Value:      "John",
+				},
+			},
+			Composites: []Composite{
+				Composite{
+					Operator: OperatorAnd,
+					Rules: []Rule{
+						Rule{
+							Comparator: "gt",
+							Path:       "age",
+							Value:      float64(20),
+						},
+						Rule{
+							Comparator: "lt",
+							Path:       "age",
+							Value:      float64(30),
+						},
+					},
 				},
 			},
 		}

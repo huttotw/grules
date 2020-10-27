@@ -26,6 +26,7 @@ e = e.AddComparator("always-false", func(a, b interface{}) bool {
 props := map[string]interface{}{
     "user": map[string]interface{}{
         "name": "Trevor",
+        "age": float64(25),
     }
 }
 

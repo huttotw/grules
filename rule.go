@@ -102,9 +102,11 @@ func (r *rule) UnmarshalJSON(data []byte) error {
 // Composite is a group of rules that are joined by a logical operator
 // AND or OR. If the operator is AND all of the rules must be true,
 // if the operator is OR, one of the rules must be true.
+
 type composite struct {
-	Operator string `json:"operator"`
-	Rules    []rule `json:"rules"`
+	Operator   string      `json:"operator"`
+	Rules      []Rule      `json:"rules"`
+	Composites []Composite `json:"composites"`
 }
 
 // Engine is a group of composites. All of the composites must be
@@ -155,10 +157,22 @@ func (c composite) evaluate(props map[string]interface{}, comps map[string]Compa
 				return false
 			}
 		}
+		for _, cc := range c.Composites {
+			res := cc.evaluate(props, comps)
+			if res == false {
+				return false
+			}
+		}
 		return true
 	case OperatorOr:
 		for _, r := range c.Rules {
 			res := r.evaluate(props, comps)
+			if res == true {
+				return true
+			}
+		}
+		for _, cc := range c.Composites {
+			res := cc.evaluate(props, comps)
 			if res == true {
 				return true
 			}
