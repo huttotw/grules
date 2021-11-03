@@ -5,10 +5,26 @@ import (
 	"strings"
 )
 
-// Comparator is a function that should evaluate two values and return
+// Compare is a function that should evaluate two values and return
 // the true if the comparison is true, or false if the comparison is
 // false
-type Comparator func(a, b interface{}) bool
+type Compare func(a, b interface{}) bool
+
+// defaultComparers is a map of all the default comparators that
+// a new engine should include
+var defaultComparers = map[string]Compare{
+	"eq":        equal,
+	"neq":       notEqual,
+	"gt":        greaterThan,
+	"gte":       greaterThanEqual,
+	"lt":        lessThan,
+	"lte":       lessThanEqual,
+	"contains":  contains,
+	"ncontains": notContains,
+	"oneof":     oneOf,
+	"noneof":    noneOf,
+	"regex":     regex,
+}
 
 // equal will return true if a == b
 func equal(a, b interface{}) bool {
@@ -262,11 +278,8 @@ func oneOf(a, b interface{}) bool {
 	}
 
 	_, found := m[a]
-	if found {
-		return true
-	}
 
-	return false
+	return found
 }
 
 // noneOf will return true if b (slice) does not contain a
@@ -277,9 +290,6 @@ func noneOf(a, b interface{}) bool {
 	}
 
 	_, found := m[a]
-	if !found {
-		return true
-	}
 
-	return false
+	return found
 }
