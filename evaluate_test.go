@@ -271,17 +271,17 @@ func TestEvaluateMultiRule(t *testing.T) {
 			`),
 			rules: []Rule{
 				{
-					Path:     "first",
-					Comparer: "eq",
-					Value:    "anakin",
-				},
-				{
 					Path:     "last",
 					Comparer: "eq",
-					Value:    "skywalker",
+					Value:    "palpatine",
+				},
+				{
+					Path:     "first",
+					Comparer: "eq",
+					Value:    "triclops",
 				},
 			},
-			operator: Or,
+			operator: And,
 			expected: false,
 		},
 	}
