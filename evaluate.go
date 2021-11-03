@@ -49,26 +49,28 @@ func evaluateObject(object gjson.Result, rule Rule) bool {
 }
 
 func evaluateMultiRule(object gjson.Result, rules []Rule, operator Operator) bool {
-	for _, rule := range rules {
-		switch operator {
-		case Or:
+	switch operator {
+	case Or:
+		for _, rule := range rules {
 			evalTrue := evaluateObject(object, rule)
 			if evalTrue {
 				return true
 			}
-		case And:
-			fallthrough
-		default:
+		}
+
+		return false
+	case And:
+		fallthrough
+	default:
+		for _, rule := range rules {
 			evalTrue := evaluateObject(object, rule)
 			if !evalTrue {
 				return false
 			}
-
-			return true
 		}
-	}
 
-	return false
+		return true
+	}
 }
 
 func evaluatePrimitive(value gjson.Result, rule Rule, compare Compare) bool {
