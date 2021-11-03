@@ -2,37 +2,151 @@
 
 # Introduction
 
-This package was created with inspiration from Thomas' [go-ruler](https://github.com/hopkinsth/go-ruler) to run a simple set of rules against an entity.
+A simple rules engine with great flexibility capable of building binary decision trees of any depth.
 
-This version includes a couple more features including, AND and OR composites and the ability to add custom comparators.
+Utilizes [gjson](https://github.com/tidwall/gjson) for pathing for extra flexibility.
 
-**Note**: This package only compares two types: `string` and `float64`, this plays nicely with `encoding/json`.
-
-# Example
+# Simple Example (pass)
 
 ```go
-// Create a new instance of an engine with some default comparators
-e, err := NewJSONEngine(json.RawMessage(`{"composites":[{"operator":"or","rules":[{"comparator":"always-false","path":"user.name","value":"Trevor"},{"comparator":"eq","path":"user.name","value":"Trevor"}]}]}`))
-if err != nil {
-    panic(err)
+json := `
+{
+    "name": {"first": "anakin", "last": "skywalker"},
+    "age": 22,
+    "children": ["luke", "leia"],
+    "order": "jedi",
+    "friends": [
+        {"first": "r2d2",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "ben",   "last": "kenobi",     "order": "jedi",     "age": 38, "episodes": [1,2,3,4,5,6]},
+        {"first": "c3po",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "sheev", "last": "palpatine",  "order": "sith",     "age": 63, "episodes": [1,2,3,5,6,9]}
+    ]
+}
+`
+
+rule := `
+{
+    "comparer": "eq",
+    "path": "name.first",
+    "value": "anakin"
+}
+`
+
+pass, failReason := grules.Evaluate(json, rule)
+if !pass {
+    fmt.Println("FAILED: ", failreason)
 }
 
-// Add a new, custom comparator
-e = e.AddComparator("always-false", func(a, b interface{}) bool {
-    return false
-})
+fmt.Println(pass)
 
-// Give some properties, this map can be deeper and supports interfaces
-props := map[string]interface{}{
-    "user": map[string]interface{}{
-        "name": "Trevor",
-    }
-}
-
-// Run the engine on the props
-res := e.Evaluate(props)
-// res == true
 ```
+
+Output: `true`
+
+# Simple Example (fail)
+
+```go
+json := `
+{
+    "name": {"first": "anakin", "last": "skywalker"},
+    "age": 22,
+    "children": ["luke", "leia"],
+    "order": "jedi",
+    "friends": [
+        {"first": "r2d2",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "ben",   "last": "kenobi",     "order": "jedi",     "age": 38, "episodes": [1,2,3,4,5,6]},
+        {"first": "c3po",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "sheev", "last": "palpatine",  "order": "sith",     "age": 63, "episodes": [1,2,3,5,6,9]}
+    ]
+}
+`
+
+rule := `
+{
+    "comparer": "lt",
+    "path": "age",
+    "value": "20"
+}
+`
+
+passed, failReason := grules.Evaluate(json, rule)
+if !passed {
+    fmt.Println("FAILED: ", failreason)
+}
+
+fmt.Println(passed)
+
+```
+
+Output: `FAILED: value '22' at 'age' is not 'less than' rule value '20'`
+
+# Complicated Example (pass)
+
+```go
+json := `
+{
+    "name": {"first": "anakin", "last": "skywalker"},
+    "age": 22,
+    "children": ["luke", "leia"],
+    "order": "jedi",
+    "friends": [
+        {"first": "r2d2",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "ben",   "last": "kenobi",     "order": "jedi",     "age": 38, "episodes": [1,2,3,4,5,6]},
+        {"first": "c3po",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "sheev", "last": "palpatine",  "order": "sith",     "age": 63, "episodes": [1,2,3,5,6,9]}
+    ]
+}
+`
+
+rule := `
+{
+    "operator": "or",
+    "rules": [
+        {
+            "operator": "and",
+            "rules": [
+                {
+                    "path": "name.first",
+                    "comparer": "eq",
+                    "value": "darth"
+                },
+                {
+                    "path": "name.last",
+                    "comparer": "eq",
+                    "value": "vader"
+                }
+            ]
+        },
+        {
+            "operator": "or",
+            "rules": [
+                {
+                    "path": "order",
+                    "comparer": "eq",
+                    "value": "first world order"
+                },
+                {
+                    "operator": "or",
+                    "path": "friends.#.order",
+                    "comparer": "contains",
+                    "value": "sith"
+                }
+            ]
+        }
+    ]
+}
+`
+
+pass, failReason := grules.Evaluate(json, rule)
+if !pass {
+    fmt.Println("FAILED: ", failreason)
+}
+
+fmt.Println(pass)
+
+```
+
+Output: `true`
 
 # Comparators
 
