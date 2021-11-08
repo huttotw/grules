@@ -1,25 +1,15 @@
 package grules
 
 import (
-	jsonencoding "encoding/json"
-	"fmt"
-	"strings"
-
 	"github.com/tidwall/gjson"
 )
 
 // NOTE the string returned will say why the rule did not evaluate. I am returning the string now
 // as to not change the function signature for a future version when this feature comes out.
-func Evaluate(json string, rule string) (bool, string) {
+func Evaluate(json string, rule Rule) (bool, string) {
 	object := gjson.Parse(json)
 
-	var r Rule
-	err := jsonencoding.NewDecoder(strings.NewReader(rule)).Decode(&r)
-	if err != nil {
-		return false, fmt.Sprintf("could not decode rule, %s", err.Error())
-	}
-
-	return evaluateObject(object, r), "REASON NOT YET IMPLEMENTED"
+	return evaluateObject(object, rule), "REASON NOT YET IMPLEMENTED"
 }
 
 func evaluateObject(object gjson.Result, rule Rule) bool {
