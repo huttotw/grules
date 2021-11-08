@@ -5,14 +5,14 @@ import (
 	"strings"
 )
 
-// Compare is a function that should evaluate two values and return
+// Comparator is a function that should evaluate two values and return
 // the true if the comparison is true, or false if the comparison is
 // false
-type Compare func(a, b interface{}) bool
+type Comparator func(a, b interface{}) bool
 
-// defaultComparers is a map of all the default comparators that
+// defaultComparators is a map of all the default comparators that
 // a new engine should include
-var defaultComparers = map[string]Compare{
+var defaultComparators = map[string]Comparator{
 	"eq":        equal,
 	"neq":       notEqual,
 	"gt":        greaterThan,
@@ -220,6 +220,54 @@ func contains(a, b interface{}) bool {
 	return false
 }
 
+func Contains(a, b interface{}) bool {
+	switch bt := b.(type) {
+	case string:
+		switch at := a.(type) {
+		case []interface{}:
+			for _, v := range at {
+				if elem, ok := v.(string); ok && elem == bt {
+					return true
+				}
+			}
+			return false
+		case []string:
+			for _, v := range at {
+				if v == bt {
+					return true
+				}
+			}
+			return false
+		case string:
+			return strings.Contains(a.(string), b.(string))
+		default:
+			return false
+		}
+	case float64:
+		switch at := a.(type) {
+		case []interface{}:
+			for _, v := range at {
+				if elem, ok := v.(float64); ok && elem == bt {
+					return true
+				}
+			}
+			return false
+		case []float64:
+			for _, v := range at {
+				if v == bt {
+					return true
+				}
+			}
+		default:
+			return false
+		}
+	default:
+		return false
+	}
+
+	return false
+}
+
 // notContains will return true if the b is not contained a. This will also return
 // true if a is a slice of different types than b. It will return false if a
 // is not a slice or a string.
@@ -290,6 +338,5 @@ func noneOf(a, b interface{}) bool {
 	}
 
 	_, found := m[a]
-
-	return found
+	return !found
 }

@@ -20,7 +20,7 @@ func TestValidate(t *testing.T) {
 			rule: `
 			{
 				"path": "foo.bar",
-				"comparer": "eq",
+				"comparator": "eq",
 				"value": 42
 			}
 			`,
@@ -34,12 +34,12 @@ func TestValidate(t *testing.T) {
 				"rules": [
 					{
 						"path": "foo.bar",
-						"comparer": "eq",
+						"comparator": "eq",
 						"value": 42
 					},
 					{
 						"path": "fizz.buzz",
-						"comparer": "eq",
+						"comparator": "eq",
 						"value": 24
 					}
 				]
@@ -51,43 +51,43 @@ func TestValidate(t *testing.T) {
 			desc:          "nothing set",
 			rule:          `{}`,
 			shouldError:   true,
-			expectedError: "must set either path, comparer, and value OR operator and rules",
+			expectedError: "must set either path, comparator, and value OR operator and rules",
 		},
 		{
 			desc: "setting both base rule and child rules",
 			rule: `
 			{
 				"path": "foo.bar",
-				"comparer": "eq",
+				"comparator": "eq",
 				"value": 42,
 				"operator": "or",
 				"rules": [
 					{
 						"path": "foo.bar",
-						"comparer": "eq",
+						"comparator": "eq",
 						"value": 42
 					},
 					{
 						"path": "fizz.buzz",
-						"comparer": "eq",
+						"comparator": "eq",
 						"value": 24
 					}
 				]
 			}
 			`,
 			shouldError:   true,
-			expectedError: "setting path, comparer, and value AS WELL AS operator and rules is not valid",
+			expectedError: "setting path, comparator, and value AS WELL AS operator and rules is not valid",
 		},
 		{
 			desc: "missing value for basic rule",
 			rule: `
 			{
 				"path": "foo.bar",
-				"comparer": "eq"
+				"comparator": "eq"
 			}
 			`,
 			shouldError:   true,
-			expectedError: "must set either path, comparer, and value OR operator and rules",
+			expectedError: "must set either path, comparator, and value OR operator and rules",
 		},
 	}
 	for _, tc := range testCases {

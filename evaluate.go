@@ -36,55 +36,57 @@ func evaluateObject(object gjson.Result, rule Rule) bool {
 		return false
 	}
 
-	compare, found := defaultComparers[rule.Comparer]
+	comparator, found := defaultComparators[rule.Comparator]
 	if !found {
 		return false
 	}
 
 	if value.IsArray() {
-		return evaluateArrayOfPrimitives(value.Array(), rule, compare)
+		return evaluateArrayOfPrimitives(value.Array(), rule, comparator)
 	}
 
-	return evaluatePrimitive(value, rule, compare)
+	return evaluatePrimitive(value, rule, comparator)
 }
 
 func evaluateMultiRule(object gjson.Result, rules []Rule, operator Operator) bool {
-	for _, rule := range rules {
-		switch operator {
-		case Or:
+	switch operator {
+	case Or:
+		for _, rule := range rules {
 			evalTrue := evaluateObject(object, rule)
 			if evalTrue {
 				return true
 			}
-		case And:
-			fallthrough
-		default:
+		}
+
+		return false
+	case And:
+		fallthrough
+	default:
+		for _, rule := range rules {
 			evalTrue := evaluateObject(object, rule)
 			if !evalTrue {
 				return false
 			}
-
-			return true
 		}
-	}
 
-	return false
+		return true
+	}
 }
 
-func evaluatePrimitive(value gjson.Result, rule Rule, compare Compare) bool {
+func evaluatePrimitive(value gjson.Result, rule Rule, comparator Comparator) bool {
 	switch value.Type {
 	case gjson.String:
-		return compare(value.Str, rule.Value)
+		return comparator(value.Str, rule.Value)
 	case gjson.Number:
-		return compare(value.Num, rule.Value)
+		return comparator(value.Num, rule.Value)
 	case gjson.True:
 		fallthrough
 	case gjson.False:
-		return compare(value.Bool(), rule.Value)
+		return comparator(value.Bool(), rule.Value)
 	default:
 		if value.IsArray() {
 			slice := transformGJSONArrayToSlice(value.Array())
-			return compare(slice, rule.Value)
+			return comparator(slice, rule.Value)
 		}
 	}
 
@@ -105,7 +107,7 @@ func transformGJSONArrayToSlice(values []gjson.Result) []interface{} {
 			slice = append(slice, value.Bool())
 		default:
 			if value.IsArray() {
-				slice = append(slice, transformGJSONArrayToSlice(value.Array()))
+				slice = append(slice, transformGJSONArrayToSlice(value.Array())...)
 			}
 		}
 	}
@@ -113,15 +115,15 @@ func transformGJSONArrayToSlice(values []gjson.Result) []interface{} {
 	return slice
 }
 
-func evaluateArrayOfPrimitives(values []gjson.Result, rule Rule, compare Compare) bool {
+func evaluateArrayOfPrimitives(values []gjson.Result, rule Rule, comparator Comparator) bool {
 	switch rule.Operator {
 	case Or:
 		for _, value := range values {
 			if value.IsArray() {
-				return evaluateArrayOfPrimitives(value.Array(), rule, compare)
+				return evaluateArrayOfPrimitives(value.Array(), rule, comparator)
 			}
 
-			evalTrue := evaluatePrimitive(value, rule, compare)
+			evalTrue := evaluatePrimitive(value, rule, comparator)
 			if evalTrue {
 				return true
 			}
@@ -132,7 +134,7 @@ func evaluateArrayOfPrimitives(values []gjson.Result, rule Rule, compare Compare
 		fallthrough
 	default:
 		for _, value := range values {
-			evalTrue := evaluatePrimitive(value, rule, compare)
+			evalTrue := evaluatePrimitive(value, rule, comparator)
 			if !evalTrue {
 				return false
 			}

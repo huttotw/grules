@@ -32,7 +32,7 @@ func TestEvaluate(t *testing.T) {
 			desc: "standard evaluate",
 			rule: `
 			{
-				"comparer": "eq",
+				"comparator": "eq",
 				"path": "name.first",
 				"value": "anakin"
 			}
@@ -43,7 +43,7 @@ func TestEvaluate(t *testing.T) {
 			desc: "fail evaluation",
 			rule: `
 			{
-				"comparer": "eq",
+				"comparator": "eq",
 				"path": "name.first",
 				"value": "ANAKIN"
 			}
@@ -54,7 +54,7 @@ func TestEvaluate(t *testing.T) {
 			desc: "arrays",
 			rule: `
 			{
-				"comparer": "eq",
+				"comparator": "eq",
 				"operator": "or",
 				"path": "children",
 				"value": "luke"
@@ -66,7 +66,7 @@ func TestEvaluate(t *testing.T) {
 			desc: "arrays all contain",
 			rule: `
 			{
-				"comparer": "contains",
+				"comparator": "contains",
 				"operator": "and",
 				"path": "friends.#.episodes",
 				"value": 1
@@ -82,12 +82,12 @@ func TestEvaluate(t *testing.T) {
 				"rules": [
 					{
 						"path": "name.first",
-						"comparer": "eq",
+						"comparator": "eq",
 						"value": "anakin"
 					},
 					{
 						"path": "age",
-						"comparer": "gt",
+						"comparator": "gt",
 						"value": 20
 					}
 				]
@@ -106,12 +106,12 @@ func TestEvaluate(t *testing.T) {
 						"rules": [
 							{
 								"path": "name.first",
-								"comparer": "eq",
+								"comparator": "eq",
 								"value": "darth"
 							},
 							{
 								"path": "name.last",
-								"comparer": "eq",
+								"comparator": "eq",
 								"value": "vader"
 							}
 						]
@@ -121,13 +121,13 @@ func TestEvaluate(t *testing.T) {
 						"rules": [
 							{
 								"path": "order",
-								"comparer": "eq",
+								"comparator": "eq",
 								"value": "first world order"
 							},
 							{
 								"operator": "or",
 								"path": "friends.#.order",
-								"comparer": "contains",
+								"comparator": "contains",
 								"value": "sith"
 							}
 						]
@@ -165,9 +165,9 @@ func TestEvaluateObject(t *testing.T) {
 			}
 			`),
 			rule: Rule{
-				Comparer: "eq",
-				Path:     "person.firstName",
-				Value:    "stephen",
+				Comparator: "eq",
+				Path:       "person.firstName",
+				Value:      "stephen",
 			},
 			expected: true,
 		},
@@ -182,14 +182,14 @@ func TestEvaluateObject(t *testing.T) {
 			}
 			`),
 			rule: Rule{
-				Comparer: "eq",
-				Path:     "person.age",
-				Value:    29,
+				Comparator: "eq",
+				Path:       "person.age",
+				Value:      29,
 			},
 			expected: false,
 		},
 		{
-			desc: "no comparer found",
+			desc: "no comparator found",
 			object: gjson.Parse(`
 			{
 				"person": {
@@ -199,9 +199,9 @@ func TestEvaluateObject(t *testing.T) {
 			}
 			`),
 			rule: Rule{
-				Comparer: "fubar",
-				Path:     "person.age",
-				Value:    29,
+				Comparator: "fubar",
+				Path:       "person.age",
+				Value:      29,
 			},
 			expected: false,
 		},
@@ -213,10 +213,10 @@ func TestEvaluateObject(t *testing.T) {
 			}
 			`),
 			rule: Rule{
-				Comparer: "eq",
-				Operator: Or,
-				Path:     "names",
-				Value:    "stephen",
+				Comparator: "eq",
+				Operator:   Or,
+				Path:       "names",
+				Value:      "stephen",
 			},
 			expected: true,
 		},
@@ -248,14 +248,14 @@ func TestEvaluateMultiRule(t *testing.T) {
 			`),
 			rules: []Rule{
 				{
-					Path:     "first",
-					Comparer: "eq",
-					Value:    "anakin",
+					Path:       "first",
+					Comparator: "eq",
+					Value:      "anakin",
 				},
 				{
-					Path:     "last",
-					Comparer: "eq",
-					Value:    "skywalker",
+					Path:       "last",
+					Comparator: "eq",
+					Value:      "skywalker",
 				},
 			},
 			operator: Or,
@@ -271,17 +271,17 @@ func TestEvaluateMultiRule(t *testing.T) {
 			`),
 			rules: []Rule{
 				{
-					Path:     "first",
-					Comparer: "eq",
-					Value:    "anakin",
+					Path:       "last",
+					Comparator: "eq",
+					Value:      "palpatine",
 				},
 				{
-					Path:     "last",
-					Comparer: "eq",
-					Value:    "skywalker",
+					Path:       "first",
+					Comparator: "eq",
+					Value:      "triclops",
 				},
 			},
-			operator: Or,
+			operator: And,
 			expected: false,
 		},
 	}
@@ -296,11 +296,11 @@ func TestEvaluateMultiRule(t *testing.T) {
 
 func TestEvaluatePrimitive(t *testing.T) {
 	testCases := []struct {
-		desc     string
-		object   gjson.Result
-		rule     Rule
-		compare  Compare // compare function should eval to true if values passed in correctly
-		expected bool
+		desc       string
+		object     gjson.Result
+		rule       Rule
+		comparator Comparator // comparator function should eval to true if values passed in correctly
+		expected   bool
 	}{
 		{
 			desc:   "standard string",
@@ -309,7 +309,7 @@ func TestEvaluatePrimitive(t *testing.T) {
 				Path:  "name",
 				Value: "stanton",
 			},
-			compare: func(a, b interface{}) bool {
+			comparator: func(a, b interface{}) bool {
 				return a == "stephen" && b == "stanton"
 			},
 			expected: true,
@@ -321,7 +321,7 @@ func TestEvaluatePrimitive(t *testing.T) {
 				Path:  "age",
 				Value: float64(42),
 			},
-			compare: func(a, b interface{}) bool {
+			comparator: func(a, b interface{}) bool {
 				return a == float64(21) && b == float64(42)
 			},
 			expected: true,
@@ -333,7 +333,7 @@ func TestEvaluatePrimitive(t *testing.T) {
 				Path:  "isCool",
 				Value: true,
 			},
-			compare: func(a, b interface{}) bool {
+			comparator: func(a, b interface{}) bool {
 				return a == false && b == true
 			},
 			expected: true,
@@ -345,8 +345,8 @@ func TestEvaluatePrimitive(t *testing.T) {
 				Path:  "greatMovies",
 				Value: "tenet",
 			},
-			compare:  contains,
-			expected: true,
+			comparator: contains,
+			expected:   true,
 		},
 		{
 			desc:   "non primitive rule value",
@@ -355,7 +355,7 @@ func TestEvaluatePrimitive(t *testing.T) {
 				Path:  "isCool",
 				Value: struct{ ID int }{ID: 42},
 			},
-			compare: func(a, b interface{}) bool {
+			comparator: func(a, b interface{}) bool {
 				gotWhatWeWanted := a == false && b == struct{ ID int }{ID: 42}
 
 				return !gotWhatWeWanted // inverse if we didn't get what we want
@@ -369,7 +369,7 @@ func TestEvaluatePrimitive(t *testing.T) {
 				Path:  "person", // this will be an object
 				Value: "stephen",
 			},
-			compare: func(a, b interface{}) bool {
+			comparator: func(a, b interface{}) bool {
 				// since we say the value type is a string, gjson will pass in
 				// the string version of the person, which will just be an empty string
 				//lint:ignore S1008 this is more expressive
@@ -385,7 +385,7 @@ func TestEvaluatePrimitive(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
 			value := tc.object.Get(tc.rule.Path)
-			result := evaluatePrimitive(value, tc.rule, tc.compare)
+			result := evaluatePrimitive(value, tc.rule, tc.comparator)
 
 			assert.Equal(t, tc.expected, result)
 		})
@@ -394,11 +394,11 @@ func TestEvaluatePrimitive(t *testing.T) {
 
 func TestEvaluateArrayOfPrimitives(t *testing.T) {
 	testCases := []struct {
-		desc     string
-		object   gjson.Result
-		rule     Rule
-		compare  Compare
-		expected bool
+		desc       string
+		object     gjson.Result
+		rule       Rule
+		comparator Comparator
+		expected   bool
 	}{
 		{
 			desc: "standard 'or' -- true",
@@ -425,8 +425,8 @@ func TestEvaluateArrayOfPrimitives(t *testing.T) {
 				Path:     "family.#.lastName",
 				Value:    "windu",
 			},
-			compare:  equal,
-			expected: true,
+			comparator: equal,
+			expected:   true,
 		},
 		{
 			desc: "standard 'and' -- false",
@@ -453,8 +453,8 @@ func TestEvaluateArrayOfPrimitives(t *testing.T) {
 				Path:     "family.#.lastName",
 				Value:    "palpatine",
 			},
-			compare:  equal,
-			expected: false,
+			comparator: equal,
+			expected:   false,
 		},
 		{
 			desc: "standard 'and' -- true",
@@ -481,8 +481,8 @@ func TestEvaluateArrayOfPrimitives(t *testing.T) {
 				Path:     "family.#.lastName",
 				Value:    "skywalker",
 			},
-			compare:  equal,
-			expected: true,
+			comparator: equal,
+			expected:   true,
 		},
 		{
 			desc: "standard 'and' -- false",
@@ -509,8 +509,8 @@ func TestEvaluateArrayOfPrimitives(t *testing.T) {
 				Path:     "family.#.lastName",
 				Value:    "skywalker",
 			},
-			compare:  equal,
-			expected: false,
+			comparator: equal,
+			expected:   false,
 		},
 		{
 			desc: "default to 'and' -- true",
@@ -537,8 +537,8 @@ func TestEvaluateArrayOfPrimitives(t *testing.T) {
 				Path:  "family.#.lastName",
 				Value: "skywalker",
 			},
-			compare:  equal,
-			expected: true,
+			comparator: equal,
+			expected:   true,
 		},
 		{
 			desc: "default to 'and' -- false",
@@ -565,8 +565,8 @@ func TestEvaluateArrayOfPrimitives(t *testing.T) {
 				Path:  "family.#.lastName",
 				Value: "skywalker",
 			},
-			compare:  equal,
-			expected: false,
+			comparator: equal,
+			expected:   false,
 		},
 		{
 			desc: "work with normal arrays too",
@@ -580,8 +580,8 @@ func TestEvaluateArrayOfPrimitives(t *testing.T) {
 				Path:     "lightsaberColors",
 				Value:    "purple",
 			},
-			compare:  equal,
-			expected: true,
+			comparator: equal,
+			expected:   true,
 		},
 	}
 	for _, tc := range testCases {
@@ -589,7 +589,7 @@ func TestEvaluateArrayOfPrimitives(t *testing.T) {
 			value := tc.object.Get(tc.rule.Path)
 			assert.True(t, value.IsArray(), "test is broken, path in rule does not return an array")
 
-			result := evaluateArrayOfPrimitives(value.Array(), tc.rule, tc.compare)
+			result := evaluateArrayOfPrimitives(value.Array(), tc.rule, tc.comparator)
 
 			assert.Equal(t, tc.expected, result)
 		})
@@ -740,7 +740,7 @@ func TestTransformGJSONArrayToSlice(t *testing.T) {
 		{
 			desc:     "array of arrays",
 			value:    gjson.Get(`{"arrayOfArrays":[["foo", "bar"], ["fizz","buzz"]]`, "arrayOfArrays"),
-			expected: []interface{}{[]interface{}{"foo", "bar"}, []interface{}{"fizz", "buzz"}},
+			expected: []interface{}{"foo", "bar", "fizz", "buzz"}, // will flatten because it makes compatibility with comparators easier
 		},
 	}
 	for _, tc := range testCases {

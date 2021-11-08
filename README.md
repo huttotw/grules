@@ -26,7 +26,7 @@ json := `
 
 rule := `
 {
-    "comparer": "eq",
+    "comparators": "eq",
     "path": "name.first",
     "value": "anakin"
 }
@@ -63,7 +63,7 @@ json := `
 
 rule := `
 {
-    "comparer": "lt",
+    "comparator": "lt",
     "path": "age",
     "value": "20"
 }
@@ -107,12 +107,12 @@ rule := `
             "rules": [
                 {
                     "path": "name.first",
-                    "comparer": "eq",
+                    "comparator": "eq",
                     "value": "darth"
                 },
                 {
                     "path": "name.last",
-                    "comparer": "eq",
+                    "comparator": "eq",
                     "value": "vader"
                 }
             ]
@@ -122,13 +122,13 @@ rule := `
             "rules": [
                 {
                     "path": "order",
-                    "comparer": "eq",
+                    "comparator": "eq",
                     "value": "first world order"
                 },
                 {
                     "operator": "or",
                     "path": "friends.#.order",
-                    "comparer": "contains",
+                    "comparator": "contains",
                     "value": "sith"
                 }
             ]
