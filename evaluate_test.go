@@ -1,11 +1,25 @@
 package grules
 
 import (
+	jsonencoding "encoding/json"
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/tidwall/gjson"
 )
+
+func toRule(t *testing.T, jsonRule string) Rule {
+	var rule Rule
+	err := jsonencoding.NewDecoder(strings.NewReader(jsonRule)).Decode(&rule)
+	if err != nil {
+		t.Error(fmt.Sprintf("could not decode rule, %s", err.Error()))
+		t.FailNow()
+	}
+
+	return rule
+}
 
 func TestEvaluate(t *testing.T) {
 	var testJSON = `
@@ -140,10 +154,26 @@ func TestEvaluate(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
-			result, _ := Evaluate(testJSON, tc.rule)
+			rule := toRule(t, tc.rule)
+
+			result, _ := Evaluate(testJSON, rule)
 
 			assert.Equal(t, tc.expected, result)
 		})
+	}
+}
+
+func BenchmarkEvaluate(b *testing.B) {
+	rule := Rule{
+		Comparator: "eq",
+		Path:       "name.first",
+		Value:      "anakin",
+	}
+
+	json := `{"name": "anakin skywalker"}`
+
+	for i := 0; i < b.N; i++ {
+		Evaluate(json, rule)
 	}
 }
 
