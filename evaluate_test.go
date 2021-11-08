@@ -301,6 +301,7 @@ func TestEvaluateMultiRule(t *testing.T) {
 			`),
 			rules: []Rule{
 				{
+<<<<<<< HEAD
 					Path:       "last",
 					Comparator: "eq",
 					Value:      "palpatine",
@@ -309,6 +310,16 @@ func TestEvaluateMultiRule(t *testing.T) {
 					Path:       "first",
 					Comparator: "eq",
 					Value:      "triclops",
+=======
+					Path:     "last",
+					Comparer: "eq",
+					Value:    "palpatine",
+				},
+				{
+					Path:     "first",
+					Comparer: "eq",
+					Value:    "triclops",
+>>>>>>> e2ed0b55b96774411f37024be01cd1836ccfd615
 				},
 			},
 			operator: And,
