@@ -68,8 +68,7 @@ func TestEvaluate(t *testing.T) {
 			desc: "arrays",
 			rule: `
 			{
-				"comparator": "eq",
-				"operator": "or",
+				"comparator": "contains",
 				"path": "children",
 				"value": "luke"
 			}
@@ -243,8 +242,7 @@ func TestEvaluateObject(t *testing.T) {
 			}
 			`),
 			rule: Rule{
-				Comparator: "eq",
-				Operator:   Or,
+				Comparator: "contains",
 				Path:       "names",
 				Value:      "stephen",
 			},
@@ -301,7 +299,6 @@ func TestEvaluateMultiRule(t *testing.T) {
 			`),
 			rules: []Rule{
 				{
-<<<<<<< HEAD
 					Path:       "last",
 					Comparator: "eq",
 					Value:      "palpatine",
@@ -310,16 +307,6 @@ func TestEvaluateMultiRule(t *testing.T) {
 					Path:       "first",
 					Comparator: "eq",
 					Value:      "triclops",
-=======
-					Path:     "last",
-					Comparer: "eq",
-					Value:    "palpatine",
-				},
-				{
-					Path:     "first",
-					Comparer: "eq",
-					Value:    "triclops",
->>>>>>> e2ed0b55b96774411f37024be01cd1836ccfd615
 				},
 			},
 			operator: And,
@@ -743,52 +730,6 @@ func TestTypeMatches(t *testing.T) {
 			result := typeMatches(tc.input, tc.rule)
 
 			assert.Equal(t, tc.expectedResult, result)
-		})
-	}
-}
-
-func TestTransformGJSONArrayToSlice(t *testing.T) {
-	testCases := []struct {
-		desc     string
-		value    gjson.Result
-		expected []interface{}
-	}{
-		{
-			desc:     "array of strings",
-			value:    gjson.Get(`{"strings":["foo","bar"]`, "strings"),
-			expected: []interface{}{"foo", "bar"},
-		},
-		{
-			desc:     "array of numbers",
-			value:    gjson.Get(`{"numbers":[1,2,3]`, "numbers"),
-			expected: []interface{}{float64(1), float64(2), float64(3)},
-		},
-		{
-			desc:     "array of bools",
-			value:    gjson.Get(`{"bools":[true, false, true]`, "bools"),
-			expected: []interface{}{true, false, true},
-		},
-		{
-			desc:     "non array",
-			value:    gjson.Get(`{"fizz":"buzz"`, "fizz"),
-			expected: []interface{}{"buzz"}, // this is what will happen if you don't pass in an actual array
-		},
-		{
-			desc:     "mixed types",
-			value:    gjson.Get(`{"mixedTypes":[true, 42, "foo"]`, "mixedTypes"),
-			expected: []interface{}{true, float64(42), "foo"},
-		},
-		{
-			desc:     "array of arrays",
-			value:    gjson.Get(`{"arrayOfArrays":[["foo", "bar"], ["fizz","buzz"]]`, "arrayOfArrays"),
-			expected: []interface{}{"foo", "bar", "fizz", "buzz"}, // will flatten because it makes compatibility with comparators easier
-		},
-	}
-	for _, tc := range testCases {
-		t.Run(tc.desc, func(t *testing.T) {
-			result := transformGJSONArrayToSlice(tc.value.Array())
-
-			assert.Equal(t, tc.expected, result)
 		})
 	}
 }

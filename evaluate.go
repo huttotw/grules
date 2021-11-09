@@ -32,7 +32,7 @@ func evaluateObject(object gjson.Result, rule Rule) bool {
 	}
 
 	if value.IsArray() {
-		return evaluateArrayOfPrimitives(value.Array(), rule, comparator)
+		return newSpecialSlice(value.Array()).evalualte(comparator, rule)
 	}
 
 	return evaluatePrimitive(value, rule, comparator)
