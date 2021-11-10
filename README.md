@@ -2,37 +2,151 @@
 
 # Introduction
 
-This package was created with inspiration from Thomas' [go-ruler](https://github.com/hopkinsth/go-ruler) to run a simple set of rules against an entity.
+A simple rules engine with great flexibility capable of building binary decision trees of any depth.
 
-This version includes a couple more features including, AND and OR composites and the ability to add custom comparators.
+Utilizes [gjson](https://github.com/tidwall/gjson) for pathing for extra flexibility.
 
-**Note**: This package only compares two types: `string` and `float64`, this plays nicely with `encoding/json`.
-
-# Example
+# Simple Example (pass)
 
 ```go
-// Create a new instance of an engine with some default comparators
-e, err := NewJSONEngine(json.RawMessage(`{"composites":[{"operator":"or","rules":[{"comparator":"always-false","path":"user.name","value":"Trevor"},{"comparator":"eq","path":"user.name","value":"Trevor"}]}]}`))
-if err != nil {
-    panic(err)
+json := `
+{
+    "name": {"first": "anakin", "last": "skywalker"},
+    "age": 22,
+    "children": ["luke", "leia"],
+    "order": "jedi",
+    "friends": [
+        {"first": "r2d2",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "ben",   "last": "kenobi",     "order": "jedi",     "age": 38, "episodes": [1,2,3,4,5,6]},
+        {"first": "c3po",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "sheev", "last": "palpatine",  "order": "sith",     "age": 63, "episodes": [1,2,3,5,6,9]}
+    ]
+}
+`
+
+rule := `
+{
+    "comparators": "eq",
+    "path": "name.first",
+    "value": "anakin"
+}
+`
+
+pass, failReason := grules.Evaluate(json, rule)
+if !pass {
+    fmt.Println("FAILED: ", failreason)
 }
 
-// Add a new, custom comparator
-e = e.AddComparator("always-false", func(a, b interface{}) bool {
-    return false
-})
+fmt.Println(pass)
 
-// Give some properties, this map can be deeper and supports interfaces
-props := map[string]interface{}{
-    "user": map[string]interface{}{
-        "name": "Trevor",
-    }
-}
-
-// Run the engine on the props
-res := e.Evaluate(props)
-// res == true
 ```
+
+Output: `true`
+
+# Simple Example (fail)
+
+```go
+json := `
+{
+    "name": {"first": "anakin", "last": "skywalker"},
+    "age": 22,
+    "children": ["luke", "leia"],
+    "order": "jedi",
+    "friends": [
+        {"first": "r2d2",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "ben",   "last": "kenobi",     "order": "jedi",     "age": 38, "episodes": [1,2,3,4,5,6]},
+        {"first": "c3po",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "sheev", "last": "palpatine",  "order": "sith",     "age": 63, "episodes": [1,2,3,5,6,9]}
+    ]
+}
+`
+
+rule := `
+{
+    "comparator": "lt",
+    "path": "age",
+    "value": "20"
+}
+`
+
+passed, failReason := grules.Evaluate(json, rule)
+if !passed {
+    fmt.Println("FAILED: ", failreason)
+}
+
+fmt.Println(passed)
+
+```
+
+Output: `FAILED: value '22' at 'age' is not 'less than' rule value '20'`
+
+# Complicated Example (pass)
+
+```go
+json := `
+{
+    "name": {"first": "anakin", "last": "skywalker"},
+    "age": 22,
+    "children": ["luke", "leia"],
+    "order": "jedi",
+    "friends": [
+        {"first": "r2d2",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "ben",   "last": "kenobi",     "order": "jedi",     "age": 38, "episodes": [1,2,3,4,5,6]},
+        {"first": "c3po",  "last": "droid",      "order": "republic", "age": 13, "episodes": [1,2,3,4,5,6,7,8,9]},
+        {"first": "sheev", "last": "palpatine",  "order": "sith",     "age": 63, "episodes": [1,2,3,5,6,9]}
+    ]
+}
+`
+
+rule := `
+{
+    "operator": "or",
+    "rules": [
+        {
+            "operator": "and",
+            "rules": [
+                {
+                    "path": "name.first",
+                    "comparator": "eq",
+                    "value": "darth"
+                },
+                {
+                    "path": "name.last",
+                    "comparator": "eq",
+                    "value": "vader"
+                }
+            ]
+        },
+        {
+            "operator": "or",
+            "rules": [
+                {
+                    "path": "order",
+                    "comparator": "eq",
+                    "value": "first world order"
+                },
+                {
+                    "operator": "or",
+                    "path": "friends.#.order",
+                    "comparator": "contains",
+                    "value": "sith"
+                }
+            ]
+        }
+    ]
+}
+`
+
+pass, failReason := grules.Evaluate(json, rule)
+if !pass {
+    fmt.Println("FAILED: ", failreason)
+}
+
+fmt.Println(pass)
+
+```
+
+Output: `true`
 
 # Comparators
 
@@ -56,27 +170,23 @@ When used for item-in-collection comparisons, `contains` expects the first argum
 
 | Benchmark                        | N          | Speed        | Used      | Allocs       |
 | -------------------------------- | ---------- | ------------ | --------- | ------------ |
-| BenchmarkEqual-12                | 650602549  | 5.52 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkNotEqual-12             | 876894124  | 4.09 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkLessThan-12             | 1000000000 | 2.84 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkLessThanEqual-12        | 1000000000 | 2.57 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkGreaterThan-12          | 1000000000 | 2.07 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkGreaterThanEqual-12     | 1000000000 | 2.86 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkRegex-12                | 4524237    | 793 ns/op    | 753 B/op  | 11 allocs/op |
-| BenchmarkRegexPhone-12           | 1000000    | 3338 ns/op   | 3199 B/op | 30 allocs/op |
-| BenchmarkContains-12             | 499627219  | 7.16 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkStringContains-12       | 405497102  | 8.87 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkContainsLong50000-12    | 18992      | 184016 ns/op | 0 B/op    | 0 allocs/op  |
-| BenchmarkNotContains-12          | 292932907  | 12.3 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkStringNotContains-12    | 392618857  | 9.14 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkNotContainsLong50000-12 | 19243      | 191787 ns/op | 0 B/op    | 0 allocs/op  |
-| BenchmarkOneOf-12                | 1000000000 | 1.80 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkNoneOf-12               | 1000000000 | 1.79 ns/op   | 0 B/op    | 0 allocs/op  |
-| BenchmarkPluckShallow-12         | 85997188   | 41.6 ns/op   | 16 B/op   | 1 allocs/op  |
-| BenchmarkPluckDeep-12            | 18789103   | 194 ns/op    | 112 B/op  | 1 allocs/op  |
-| BenchmarkRule_evaluate-12        | 69558996   | 51.1 ns/op   | 16 B/op   | 1 allocs/op  |
-| BenchmarkComposite_evaluate-12   | 59484760   | 55.7 ns/op   | 16 B/op   | 1 allocs/op  |
-| BenchmarkEngine_Evaluate-12      | 47892318   | 75.0 ns/op   | 16 B/op   | 1 allocs/op  |
+| BenchmarkEqual-12                | 805088716  | 4.588 ns/op  | 0 B/op    | 0 allocs/op
+| BenchmarkNotEqual-12             | 1000000000 | 3.203 ns/op  | 0 B/op    | 0 allocs/op
+| BenchmarkLessThan-12             | 1000000000 | 0.2521 ns/op | 0 B/op    | 0 allocs/op
+| BenchmarkLessThanEqual-12        | 1000000000 | 0.2639 ns/op | 0 B/op    | 0 allocs/op
+| BenchmarkGreaterThan-12          | 1000000000 | 0.2550 ns/op | 0 B/op    | 0 allocs/op
+| BenchmarkGreaterThanEqual-12     | 1000000000 | 0.2542 ns/op | 0 B/op    | 0 allocs/op
+| BenchmarkRegex-12                | 4384954    | 813.7 ns/op  | 754 B/op  | 11 allocs/op
+| BenchmarkRegexPhone-12           | 1000000    | 3378 ns/op   | 3201 B/op | 30 allocs/op
+| BenchmarkContains-12             | 525908002  | 6.169 ns/op  | 0 B/op    | 0 allocs/op
+| BenchmarkStringContains-12       | 497205760  | 7.790 ns/op  | 0 B/op    | 0 allocs/op
+| BenchmarkContainsLong50000-12    | 17085      | 217622 ns/op | 0 B/op    | 0 allocs/op
+| BenchmarkNotContains-12          | 314265795  | 12.05 ns/op  | 0 B/op    | 0 allocs/op
+| BenchmarkStringNotContains-12    | 470831580  | 7.750 ns/op  | 0 B/op    | 0 allocs/op
+| BenchmarkNotContainsLong50000-12 | 17414      | 224783 ns/op | 0 B/op    | 0 allocs/op
+| BenchmarkOneOf-12                | 1000000000 | 1.582 ns/op  | 0 B/op    | 0 allocs/op
+| BenchmarkNoneOf-12               | 1000000000 | 1.632 ns/op  | 0 B/op    | 0 allocs/op
+| BenchmarkEvaluate-12             | 35343126   | 95.07 ns/op  | 0 B/op    | 0 allocs/op
 
 To run benchmarks:
 
@@ -86,7 +196,7 @@ go test -run none -bench . -benchtime 3s -benchmem
 
 All benchmarks were run on:
 
-MacOS High Sierra 2.6Ghz Intel Core i7 16 GB 2400 MHz DDR4
+MacOS Big Sur 2.6Ghz Intel Core i7 16 GB 2400 MHz DDR4
 
 # License
 

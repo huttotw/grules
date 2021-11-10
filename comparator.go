@@ -10,6 +10,22 @@ import (
 // false
 type Comparator func(a, b interface{}) bool
 
+// defaultComparators is a map of all the default comparators that
+// a new engine should include
+var defaultComparators = map[string]Comparator{
+	"eq":        equal,
+	"neq":       notEqual,
+	"gt":        greaterThan,
+	"gte":       greaterThanEqual,
+	"lt":        lessThan,
+	"lte":       lessThanEqual,
+	"contains":  contains,
+	"ncontains": notContains,
+	"oneof":     oneOf,
+	"noneof":    noneOf,
+	"regex":     regex,
+}
+
 // equal will return true if a == b
 func equal(a, b interface{}) bool {
 	return a == b
@@ -204,6 +220,54 @@ func contains(a, b interface{}) bool {
 	return false
 }
 
+func Contains(a, b interface{}) bool {
+	switch bt := b.(type) {
+	case string:
+		switch at := a.(type) {
+		case []interface{}:
+			for _, v := range at {
+				if elem, ok := v.(string); ok && elem == bt {
+					return true
+				}
+			}
+			return false
+		case []string:
+			for _, v := range at {
+				if v == bt {
+					return true
+				}
+			}
+			return false
+		case string:
+			return strings.Contains(a.(string), b.(string))
+		default:
+			return false
+		}
+	case float64:
+		switch at := a.(type) {
+		case []interface{}:
+			for _, v := range at {
+				if elem, ok := v.(float64); ok && elem == bt {
+					return true
+				}
+			}
+			return false
+		case []float64:
+			for _, v := range at {
+				if v == bt {
+					return true
+				}
+			}
+		default:
+			return false
+		}
+	default:
+		return false
+	}
+
+	return false
+}
+
 // notContains will return true if the b is not contained a. This will also return
 // true if a is a slice of different types than b. It will return false if a
 // is not a slice or a string.
@@ -262,11 +326,8 @@ func oneOf(a, b interface{}) bool {
 	}
 
 	_, found := m[a]
-	if found {
-		return true
-	}
 
-	return false
+	return found
 }
 
 // noneOf will return true if b (slice) does not contain a
@@ -277,9 +338,5 @@ func noneOf(a, b interface{}) bool {
 	}
 
 	_, found := m[a]
-	if !found {
-		return true
-	}
-
-	return false
+	return !found
 }
